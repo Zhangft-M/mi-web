@@ -6,11 +6,11 @@
           <img src="../static/images/logo.png" alt="layui">
         </a>
         <ul class="layui-nav fly-nav layui-hide-xs">
-          <li class="layui-nav-item layui-this">
-            <a href="/"><i class="iconfont icon-jiaoliu"></i>交流</a>
+          <li class="layui-nav-item">
+            <nuxt-link to="/" target="_blank"><i class="iconfont icon-jiaoliu"></i>交流</nuxt-link>
           </li>
           <li class="layui-nav-item">
-            <a href="case/case.html"><i class="iconfont icon-iconmingxinganli"></i>案例</a>
+            <nuxt-link to="/case/case" target="_blank"><i class="iconfont icon-iconmingxinganli"></i>案例</nuxt-link>
           </li>
           <li class="layui-nav-item">
             <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>框架</a>
@@ -21,13 +21,16 @@
 
           <!-- 未登入的状态 -->
           <li class="layui-nav-item">
-            <a class="iconfont icon-touxiang layui-hide-xs" href="user/login.html"></a>
+            <nuxt-link class="iconfont icon-touxiang layui-hide-xs" to="/user/login"></nuxt-link>
+<!--            <a class="iconfont icon-touxiang layui-hide-xs" href="user/login.html"></a>-->
           </li>
           <li class="layui-nav-item">
-            <a href="user/login.html">登入</a>
+            <nuxt-link to="/user/login">登录</nuxt-link>
+<!--            <a href="user/login.html">登入</a>-->
           </li>
           <li class="layui-nav-item">
-            <a href="user/reg.html">注册</a>
+            <nuxt-link to="/user/reg">注册</nuxt-link>
+<!--            <a href="user/reg.html">注册</a>-->
           </li>
           <li class="layui-nav-item layui-hide-xs">
             <a href="/app/qq/" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" title="QQ登入"
@@ -39,7 +42,6 @@
           </li>
 
           <!-- 登入后的状态 -->
-          <!--
           <li class="layui-nav-item">
             <a class="fly-nav-avatar" href="javascript:;">
               <cite class="layui-hide-xs">贤心</cite>
@@ -55,7 +57,6 @@
               <dd><a href="/user/logout/" style="text-align: center;">退出</a></dd>
             </dl>
           </li>
-          -->
         </ul>
       </div>
     </div>

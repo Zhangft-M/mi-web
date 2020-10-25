@@ -13,7 +13,9 @@ export default {
       {rel: 'stylesheet',href: '/css/global.css'}
     ],
     script: [
-      {src: '/layui/layui.js'}
+      {src: 'http://g.alicdn.com/sd/ncpc/nc.js?t=2015052012'},
+      {src: '/layui/layui.js'},
+      {src: '/layui/layui.all.js'}
     ]
   },
 

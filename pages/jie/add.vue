@@ -14,16 +14,15 @@
                   <div class="layui-row layui-col-space15 layui-form-item">
                     <div class="layui-col-md3">
                       <label class="layui-form-label">所在专栏</label>
-                      <div class="layui-input-block">
-                        <select lay-verify="required" name="class" lay-filter="column">
-                          <option></option>
-                          <option value="0">提问</option>
-                          <option value="99">分享</option>
-                          <option value="100">讨论</option>
-                          <option value="101">建议</option>
-                          <option value="168">公告</option>
-                          <option value="169">动态</option>
-                        </select>
+                      <div class="layui-input-block" style="padding-left: 5px">
+                          <el-select v-model="value" placeholder="请选择">
+                            <el-option
+                              v-for="item in options"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value">
+                            </el-option>
+                          </el-select>
                       </div>
                     </div>
                     <div class="layui-col-md9">
@@ -66,8 +65,7 @@
                   </div>
                   <div class="layui-form-item layui-form-text">
                     <div class="layui-input-block">
-                      <textarea id="L_content" name="content" required lay-verify="required" placeholder="详细描述"
-                                class="layui-textarea fly-editor" style="height: 260px;"></textarea>
+                      <TinyEditor></TinyEditor>
                     </div>
                   </div>
                   <div class="layui-form-item">
@@ -109,7 +107,10 @@
 </template>
 
 <script>
-export default {}
+import TinyEditor from "@/components/TinyEditor";
+export default {
+  components: {TinyEditor}
+}
 </script>
 
 <style scoped>
