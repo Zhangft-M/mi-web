@@ -1,3 +1,4 @@
+/*
 import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
@@ -21,3 +22,4 @@ const store = () => {
 // })
 
 export default store
+*/

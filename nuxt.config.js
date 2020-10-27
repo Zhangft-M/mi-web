@@ -10,7 +10,11 @@ export default {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {rel: 'stylesheet',href: '/layui/css/layui.css'},
-      {rel: 'stylesheet',href: '/css/global.css'}
+      {rel: 'stylesheet',href: '/css/global.css'},
+      {
+        rel:"stylesheet",
+        href:"https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      }
     ],
     script: [
       {src: 'http://g.alicdn.com/sd/ncpc/nc.js?t=2015052012'},

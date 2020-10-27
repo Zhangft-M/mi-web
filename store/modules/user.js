@@ -1,8 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
-
-const getDefaultState = () => {
+ export const state = () => {
   return {
     token: getToken(),
     name: '',
@@ -10,9 +9,8 @@ const getDefaultState = () => {
   }
 }
 
-const state = getDefaultState()
 
-const mutations = {
+export const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getDefaultState())
   },
@@ -27,7 +25,7 @@ const mutations = {
   }
 }
 
-const actions = {
+export const actions = {
   // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
@@ -87,10 +85,10 @@ const actions = {
   }
 }
 
-export default {
+/*export default {
   namespaced: true,
   state,
   mutations,
   actions
-}
+}*/
 

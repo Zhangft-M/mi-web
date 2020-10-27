@@ -15,32 +15,22 @@
                   <div class="layui-form-item">
                     <label for="L_email" class="layui-form-label">邮箱/手机号</label>
                     <div class="layui-input-inline">
-                      <input type="text" id="L_email" name="email" required lay-verify="required" autocomplete="off"
+                      <input v-model="userInfo.userName" type="text" id="L_email" name="email" required lay-verify="required" autocomplete="off"
                              class="layui-input">
                     </div>
                   </div>
                   <div class="layui-form-item">
                     <label for="L_pass" class="layui-form-label">密码</label>
                     <div class="layui-input-inline">
-                      <input type="password" id="L_pass" name="pass" required lay-verify="required" autocomplete="off"
+                      <input v-model= 'userInfo.password' type="password" id="L_pass" name="pass" required lay-verify="required" autocomplete="off"
                              class="layui-input">
                     </div>
                   </div>
                   <div style="padding-top: 5px;padding-bottom: 10px">
                     <Verify></Verify>
                   </div>
-                  <!--                <div class="layui-form-item">-->
-                  <!--                  <label for="L_vercode" class="layui-form-label">人类验证</label>-->
-                  <!--                  <div class="layui-input-inline">-->
-                  <!--                    <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请回答后面的问题" autocomplete="off" class="layui-input">-->
-                  <!--                  </div>-->
-                  <!--                  <div class="layui-form-mid">-->
-                  <!--&lt;!&ndash;                    验证码&ndash;&gt;-->
-                  <!--                    <span style="color: #c00;"></span>-->
-                  <!--                  </div>-->
-                  <!--                </div>-->
                   <div class="layui-form-item">
-                    <button class="layui-btn" lay-filter="*" lay-submit>立即登录</button>
+                    <button class="layui-btn" lay-filter="*" lay-submit @click="handleLogin()">立即登录</button>
                     <span style="padding-left:20px;">
                   <a href="forget.html">忘记密码？</a>
                 </span>
@@ -71,6 +61,10 @@ export default {
   },
   data() {
     return {
+      userInfo:{
+        userName: '',
+        password: ''
+      }
     }
   },
   created() {
@@ -82,6 +76,9 @@ export default {
   methods: {
     initVerify(){
 
+    },
+    handleLogin(){
+      console.log(this.userInfo.userName)
     }
   }
 
