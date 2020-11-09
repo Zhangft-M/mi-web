@@ -1,7 +1,7 @@
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    title: 'mi',
+    title: '觅社区',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1,maximum-scale=1' },
@@ -12,8 +12,8 @@ export default {
       {rel: 'stylesheet',href: '/layui/css/layui.css'},
       {rel: 'stylesheet',href: '/css/global.css'},
       {
-        rel:"stylesheet",
-        href:"https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+         rel:"stylesheet",
+         href:"https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
       }
     ],
     script: [
