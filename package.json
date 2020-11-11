@@ -14,9 +14,7 @@
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
     "js-cookie": "^2.2.1",
-    "nuxt": "^2.14.6",
-    "vue": "^2.6.12",
-    "vuex": "^3.5.1"
+    "nuxt": "^2.14.7"
   },
   "devDependencies": {}
 }

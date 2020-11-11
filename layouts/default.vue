@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="z-index">
     <div class="fly-header layui-bg-black">
       <div class="layui-container">
         <a class="fly-logo" href="/">
@@ -15,7 +15,15 @@
           <li class="layui-nav-item">
             <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>框架</a>
           </li>
+          <li class="layui-nav-item">
+            <div class="layui-hide-xs" style="position: center">
+              <el-input placeholder="请输入内容" class="el-input--medium" style="border-radius: 20px">
+                <el-button slot="append" icon="el-icon-search" circle></el-button>
+              </el-input>
+            </div>
+          </li>
         </ul>
+
 
         <ul class="layui-nav fly-nav-user">
 
@@ -32,18 +40,18 @@
             <nuxt-link to="/user/reg">注册</nuxt-link>
 <!--            <a href="user/reg.html">注册</a>-->
           </li>
-          <li class="layui-nav-item layui-hide-xs">
+          <!--<li class="layui-nav-item layui-hide-xs">
             <a href="/app/qq/" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" title="QQ登入"
                class="iconfont icon-qq"></a>
           </li>
           <li class="layui-nav-item layui-hide-xs">
             <a href="/app/weibo/" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" title="微博登入"
                class="iconfont icon-weibo"></a>
-          </li>
+          </li>-->
 
           <!-- 登入后的状态 -->
           <li class="layui-nav-item">
-            <a class="fly-nav-avatar" href="javascript:;">
+            <a class="fly-nav-avatar" href="javascript:">
               <cite class="layui-hide-xs">贤心</cite>
               <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
               <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
@@ -73,4 +81,10 @@
 </template>
 
 <style>
+.z-index{
+  z-index: 0!important;
+}
+.home-z-index{
+  z-index: 2000!important;
+}
 </style>

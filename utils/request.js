@@ -1,6 +1,7 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
-import store from '@/store'
+import { MessageBox, Message,Notification  } from 'element-ui'
+// import store from '@/store'
+import getters from '@/store/getters'
 import { getToken } from '@/utils/auth'
 
 // create an axios instance
@@ -15,7 +16,7 @@ service.interceptors.request.use(
   config => {
     // do something before request is sent
 
-    if (store.getters.token) {
+    if (getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
@@ -47,11 +48,18 @@ service.interceptors.response.use(
 
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 20000) {
-      Message({
+      Notification({
+        message : res.message || "获取数据失败",
+        type: "error",
+        position: "bottom-right",
+        duration: 3*1000
+      })
+      /*Message({
         message: res.message || 'Error',
         type: 'error',
-        duration: 5 * 1000
-      })
+        offset: 100,
+        duration: 3*1000
+      })*/
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
@@ -61,7 +69,8 @@ service.interceptors.response.use(
           cancelButtonText: 'Cancel',
           type: 'warning'
         }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
+          // this.$store.dispatch('user/resetToken')
+          this.$store.dispatch('user/resetToken').then(() => {
             location.reload()
           })
         })
@@ -73,10 +82,12 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
+    Notification({
+      message : error.message || "获取数据失败",
+      type: "error",
+      // position: "bottom-right",
+      offset: 50,
+      duration: 3*1000
     })
     return Promise.reject(error)
   }

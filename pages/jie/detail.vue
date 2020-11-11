@@ -1,9 +1,8 @@
 <template>
-  <div>
-    <Column></Column>
+  <div style="padding-top: 10px">
     <div class="layui-container">
       <div class="layui-row layui-col-space15">
-        <div class="layui-col-md8 content detail">
+        <div class="layui-col-md12 content detail">
           <div class="fly-panel detail-box">
             <h1>Fly Template v3.0，基于 layui 的极简社区页面模版</h1>
             <div class="fly-detail-info">
@@ -188,7 +187,6 @@
             </div>
           </div>
         </div>
-        <Broadside></Broadside>
       </div>
     </div>
   </div>

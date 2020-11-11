@@ -11,6 +11,8 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {rel: 'stylesheet',href: '/layui/css/layui.css'},
       {rel: 'stylesheet',href: '/css/global.css'},
+      {rel: 'stylesheet',href: '/css/hover.css'},
+      {rel: 'stylesheet',href: '/font-awesome/css/font-awesome.min.css'},
       {
          rel:"stylesheet",
          href:"https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
