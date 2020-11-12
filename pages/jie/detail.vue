@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-top: 10px">
+  <div>
     <div class="layui-container">
       <div class="layui-row layui-col-space15">
         <div class="layui-col-md12 content detail">

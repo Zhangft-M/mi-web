@@ -1,6 +1,6 @@
 <template>
   <div style="padding-top: 10px;padding-bottom: 30px">
-    <div class="fly-panel fly-column" style="background: #92B8B1">
+    <div class="fly-panel fly-column" :style="'background: ' + bgColor">
       <div class="layui-container">
         <el-card style="height: 80px">
           <ul class="layui-clear">
@@ -56,7 +56,8 @@ export default {
   data() {
     return {
     }
-  }
+  },
+  props:['bgColor']
 }
 </script>
 

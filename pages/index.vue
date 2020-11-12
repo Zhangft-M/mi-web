@@ -1,27 +1,30 @@
 <template>
   <div style="background: #92B8B1">
-    <Column></Column>
     <div class="layui-container">
-      <div class="layui-row layui-col-space15">
-        <div class="layui-col-md6" v-for="index in 4" :key="index">
+      <Column></Column>
+      <div class="layui-row layui-col-space12" style="padding-left: 20px">
+        <div class="layui-col-md6" v-for="postItem in postItems" :key="postItem.categoryId">
           <el-card class="hvr-bob">
             <div slot="header" class="clearfix">
               <span style="font-family: 幼圆,serif;color: #5FB878"><i class="fa fa-bullseye"></i>&nbsp;卡片名称</span>
               <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
             </div>
-            <div class="content-card ">
+            <div class="content-card" style="width: 500px">
               <ul class="fly-list">
-                <div v-for="index in 4" :key="index" class="content-card hvr-grow-shadow">
-                  <el-card class="box-card animate__animated animate__lightSpeedInLeft hvr-curl-top-right" shadow="hover">
-                    <li>
+                <div v-for="postData in postItem.postDatas" :key="postData.id" class="content-card hvr-grow-shadow">
+                  <el-card class="box-card animate__animated animate__lightSpeedInLeft hvr-curl-top-right"
+                           shadow="hover">
+                    <li style="width: 340px">
                       <nuxt-link to="/user/home" class="fly-avatar" target="_blank">
-                        <el-avatar size="large" src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心"></el-avatar>
+                        <el-avatar size="large"
+                                   src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
+                                   alt="贤心"></el-avatar>
                       </nuxt-link>
                       <h2>
                         <a class="layui-badge">动态</a>
                         <nuxt-link to="/jie/detail" target="_blank">
                         <span class="title-font">
-                          基于 layui 的极简社区页面模版
+                          {{ postData.title }}
                         </span>
                         </nuxt-link>
                         <!--                  <a href="jie/detail.vue"></a>-->
@@ -36,8 +39,8 @@
                         <span class="fly-list-kiss layui-hide-xs" title="悬赏积分"><i class="fa fa-diamond"></i> 60</span>
                         <span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
                         <span class="fly-list-nums">
-               <i class="fa fa-commenting"></i> 66
-              </span>
+                          <i class="fa fa-commenting"></i> 66
+                        </span>
                       </div>
                       <div class="fly-list-badge">
                         <!--<span class="layui-badge layui-bg-black">置顶</span>
@@ -68,7 +71,8 @@ export default {
   data() {
     return {
       keyword: 'home',
-      category:[],
+      bgColor: '#92B8B1',
+      category: [],
       postItems: []
     }
   },
@@ -79,9 +83,10 @@ export default {
     getData() {
       // console.log("调用接口获取数据")
       // this.$message.info("测试",)
-      getRecommendData().then((res)=>{
-        this.postItems = res.data
-      }).catch(()=>{
+      getRecommendData().then((res) => {
+        console.log(res)
+        this.postItems = res
+      }).catch(() => {
 
       })
       console.log("获取主页数据")
@@ -94,7 +99,7 @@ export default {
 .content-card {
   padding-top: 10px;
   padding-bottom: 10px;
-  padding-left: 10px;
+
 }
 
 .title-font {
