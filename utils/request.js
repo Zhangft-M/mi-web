@@ -38,7 +38,8 @@ service.interceptors.response.use(
     const code = response.status
     if (code < 200 || code > 300) {
       Notification.error({
-        title: response.message
+        title: response.message,
+        position: "bottom-right"
       })
       return Promise.reject('error')
     } else {
@@ -54,7 +55,8 @@ service.interceptors.response.use(
       if (error.toString().indexOf('Error: timeout') !== -1) {
         Notification.error({
           title: '网络请求超时',
-          duration: 5000
+          duration: 5000,
+          position: "bottom-right"
         })
         return Promise.reject(error)
       }
@@ -73,14 +75,16 @@ service.interceptors.response.use(
         if (errorMsg !== undefined) {
           Notification.error({
             title: errorMsg,
-            duration: 5000
+            duration: 5000,
+            position: "bottom-right"
           })
         }
       }
     } else {
       Notification.error({
         title: '接口请求失败',
-        duration: 5000
+        duration: 5000,
+        position: "bottom-right"
       })
     }
     return Promise.reject(error)

@@ -1,7 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
- export const state = () => {
+ export const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
@@ -9,6 +9,7 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
   }
 }
 
+const state = getDefaultState()
 
 export const mutations = {
   RESET_STATE: (state) => {
