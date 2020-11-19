@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Column></Column>
     <div class="layui-container fly-marginTop">
       <div class="fly-panel">
         <div class="fly-none">

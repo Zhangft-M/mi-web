@@ -14,10 +14,10 @@
         <li class="layui-nav-item">
           <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>框架</a>
         </li>
-        <li class="layui-nav-item">
+        <li class="layui-nav-item" v-show="isSearch">
           <div class="layui-hide-xs" style="position: center">
-            <el-input placeholder="请输入内容" class="el-input--medium" style="border-radius: 20px">
-              <el-button slot="append" icon="el-icon-search" circle></el-button>
+            <el-input placeholder="请输入内容" class="el-input--medium" v-model="keyword" style="border-radius: 20px">
+              <el-button slot="append" icon="el-icon-search" circle @click="search"></el-button>
             </el-input>
           </div>
         </li>
@@ -59,7 +59,8 @@
           <dl class="layui-nav-child">
             <dd><a href="user/set.html"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
             <dd><a href="user/message.html"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-            <dd><a href="user/home.html"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
+            <dd><a href="user/home.html"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a>
+            </dd>
             <hr style="margin: 5px 0;">
             <dd><a href="/user/logout/" style="text-align: center;">退出</a></dd>
           </dl>
@@ -71,7 +72,18 @@
 
 <script>
 export default {
-name: "Header"
+  name: "Header",
+  data() {
+    return {
+      keyword: null
+    }
+  },
+  props:['isSearch'],
+  methods:{
+    search(){
+      this.$emit("getKeyword",this.keyword)
+    }
+  }
 }
 </script>
 

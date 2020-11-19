@@ -36,9 +36,6 @@
               <div class="fly-detail-user">
                 <a href="../user/home.html" class="fly-link">
                   <cite>贤心</cite>
-<!--                  需要数据-->
-                  <i class="iconfont icon-renzheng" title="认证信息："></i>
-                  <i class="layui-badge fly-badge-vip">VIP3</i>
                 </a>
                 <span>2017-11-30</span>
               </div>
@@ -53,26 +50,11 @@
                 执着的信念、以及对未来持续加强的承诺。该模版基于 layui 搭建而成，可作为极简通用型社区的页面支撑。
               </p>
               <p>更新日志：</p>
-              <pre>
-# v3.0 2017-11-30
-* 采用 layui 2.2.3 作为 UI 支撑
-* 全面同步最新的 Fly 社区风格，各种细节得到大幅优化
-* 更友好的响应式适配能力
-</pre>
+              <pre></pre>
 
-              下载
               <hr>
-              <p>
-                官网：<a href="http://www.layui.com/template/fly/"
-                      target="_blank">http://www.layui.com/template/fly/</a><br>
-                码云：<a href="https://gitee.com/sentsin/fly/" target="_blank">https://gitee.com/sentsin/fly/</a><br>
-                GitHub：<a href="https://github.com/layui/fly" target="_blank">https://github.com/layui/fly</a>
-              </p>
               封面
               <hr>
-              <p>
-                <img src="../../static/images/fly.jpg" alt="Fly社区">
-              </p>
             </div>
           </div>
 
@@ -92,10 +74,7 @@
                   <div class="fly-detail-user">
                     <a href="" class="fly-link">
                       <cite>贤心</cite>
-                      <i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
-                      <i class="layui-badge fly-badge-vip">VIP3</i>
                     </a>
-
                     <span>(楼主)</span>
                     <!--
                     <span style="color:#5FB878">(管理员)</span>
@@ -193,12 +172,7 @@
 </template>
 
 <script>
-import Column from "@/components/column";
-import Broadside from "@/components/Broadside";
-
-export default {
-  components: {Broadside, Column}
-}
+export default {}
 </script>
 
 <style scoped>

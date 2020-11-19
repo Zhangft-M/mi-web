@@ -1,100 +1,108 @@
 <template>
-  <div style="background: #23262E">
-    <div class="layui-container">
-      <Column></Column>
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <div class="fly-panel-title fly-filter">
-            <el-link @click="filterData(0)" :class="{'layui-this' : filterTypeValue === 0}">综合</el-link>
-            <span class="fly-mid"></span>
-            <el-link @click="filterData(1)" :class="{'layui-this' : filterTypeValue === 1}">未结</el-link>
-            <span class="fly-mid"></span>
-            <el-link @click="filterData(2)" :class="{'layui-this' : filterTypeValue === 2}">已结</el-link>
-            <span class="fly-mid"></span>
-            <el-link @click="filterData(3)" :class="{'layui-this' : filterTypeValue === 3}">精华</el-link>
-            <span class="fly-filter-right layui-hide-xs">
+  <div>
+    <Header @getKeyword="getKeyword" :is-search="true"></Header>
+    <div style="background: #23262E">
+      <div class="layui-container">
+        <Column></Column>
+        <div>
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <div class="fly-panel-title fly-filter">
+                <el-link @click="filterData(0)" :class="{'layui-this' : filterTypeValue === 0}">综合</el-link>
+                <span class="fly-mid"></span>
+                <el-link @click="filterData(1)" :class="{'layui-this' : filterTypeValue === 1}">未结</el-link>
+                <span class="fly-mid"></span>
+                <el-link @click="filterData(2)" :class="{'layui-this' : filterTypeValue === 2}">已结</el-link>
+                <span class="fly-mid"></span>
+                <el-link @click="filterData(3)" :class="{'layui-this' : filterTypeValue === 3}">精华</el-link>
+                <span class="fly-filter-right layui-hide-xs">
               <el-link @click="sortData(0)" :class="{'layui-this' : sortTypeValue === 0}">按最新</el-link>
               <span class="fly-mid"></span>
               <el-link @click="sortData(1)" :class="{'layui-this' : sortTypeValue === 1}">按热议</el-link>
             </span>
-          </div>
-        </div>
-        <div class="layui-row layui-col-space15">
-          <div class="layui-col-md6 content-card hvr-grow-shadow card-margin" v-for="postItem in postDatas"
-               :key="postItem.id">
-            <el-card class="box-card animate__animated animate__lightSpeedInLeft hvr-curl-top-right"
-                     shadow="hover">
-              <div class="layui-row">
-                <div class="fly-list-badge" v-show="postItem.level === 1">
-                  <span class="layui-badge layui-bg-black">置顶</span>
-                  <!--<span class="layui-badge layui-bg-red">精帖</span>-->
-                </div>
-                <div class="layui-col-md2">
-                  <nuxt-link to="/user/home" class="fly-avatar" target="_blank">
-                    <el-avatar size="large"
-                               src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
-                               alt="贤心"></el-avatar>
-                  </nuxt-link>
-                </div>
-                <div class="layui-col-md10 layui-col-md-offset2">
+              </div>
+            </div>
+            <div class="layui-row layui-col-space15">
+              <div class="layui-col-md6 content-card hvr-grow-shadow card-margin" v-for="postItem in postDatas"
+                   :key="postItem.id">
+                <el-card class="box-card animate__animated animate__lightSpeedInLeft hvr-curl-top-right"
+                         shadow="hover">
                   <div class="layui-row">
-                    <div class="layui-col-md12">
-                      <h2>
-                        <a class="layui-badge">分享</a>
-                        <nuxt-link to="/jie/detail" target="_blank">
+                    <div class="fly-list-badge" v-show="postItem.level === 1">
+                      <span class="layui-badge layui-bg-black">置顶</span>
+                      <!--<span class="layui-badge layui-bg-red">精帖</span>-->
+                    </div>
+                    <div class="layui-col-md2">
+                      <nuxt-link to="/user/home" class="fly-avatar" target="_blank">
+                        <el-avatar size="large"
+                                   src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
+                                   alt="贤心"></el-avatar>
+                      </nuxt-link>
+                    </div>
+                    <div class="layui-col-md10 layui-col-md-offset2">
+                      <div class="layui-row">
+                        <div class="layui-col-md12">
+                          <h2>
+                            <a class="layui-badge">分享</a>
+                            <nuxt-link to="/jie/detail" target="_blank">
                         <span class="title-font text-title">
                           {{ postItem.title| hideTitle() }}
                         </span>
-                        </nuxt-link>
-                        <!--                  <a href="jie/detail.vue"></a>-->
-                      </h2>
-                    </div>
-                    <div class="layui-col-md12" style="padding-top: 10px">
-                      <p class="text-content">
-                        {{
-                          postItem.content | hideText()
-                        }}
-                      </p>
-                    </div>
-                    <div class="layui-col-md12" style="padding-top: 10px">
-                      <div class="fly-list-info">
-                        <nuxt-link to="/user/home" target="_blank">
-                          <i class="fa fa-user"><cite>&nbsp;{{ postItem.username }}</cite></i>
-                          <!--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
-                          <i class="layui-badge fly-badge-vip">VIP3</i>-->
-                        </nuxt-link>
-                        <span>{{ postItem.updateTime | parseDate() }}</span>
-                        <span class="fly-list-kiss layui-hide-xs" title="悬赏积分"><i
-                          class="fa fa-diamond"></i>{{ postItem.reward }}</span>
-                        <span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
-                        <span class="fly-list-nums">
+                            </nuxt-link>
+                            <!--                  <a href="jie/detail.vue"></a>-->
+                          </h2>
+                        </div>
+                        <div class="layui-col-md12" style="padding-top: 10px">
+                          <p class="text-content">
+                            {{
+                              postItem.content | hideText()
+                            }}
+                          </p>
+                        </div>
+                        <div class="layui-col-md12" style="padding-top: 10px">
+                          <div class="fly-list-info">
+                            <nuxt-link to="/user/home" target="_blank">
+                              <i class="fa fa-user"><cite>&nbsp;{{ postItem.username }}</cite></i>
+                              <!--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
+                              <i class="layui-badge fly-badge-vip">VIP3</i>-->
+                            </nuxt-link>
+                            <span>{{ postItem.updateTime | parseDate() }}</span>
+                            <span class="fly-list-kiss layui-hide-xs" title="悬赏积分"><i
+                              class="fa fa-diamond"></i>{{ postItem.reward }}</span>
+                            <span v-show="postItem.ending" class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
+                            <span class="fly-list-nums">
                           <i class="fa fa-commenting"></i> {{ postItem.commentCount }}
                         </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </el-card>
               </div>
-            </el-card>
+            </div>
+          </el-card>
+        </div>
+
+        <div class="layui-row layui-col-space15" style="padding-top: 20px">
+          <!-- <div class="fly-none">没有相关数据</div> -->
+          <div style="text-align: center">
+            <el-pagination
+              style="font-size: 50px"
+              background
+              :page-size="queryParam.size"
+              :current-page="queryParam.page + 1"
+              layout="total, prev, pager, next, jumper"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :total="total">
+            </el-pagination>
           </div>
         </div>
-      </el-card>
-      <div class="layui-row layui-col-space15" style="padding-top: 20px">
-        <!-- <div class="fly-none">没有相关数据</div> -->
-        <div style="text-align: center">
-          <el-pagination
-            style="font-size: 50px"
-            background
-            :page-sizes="[10, 15, 20, 25]"
-            layout="total, sizes, prev, pager, next, jumper"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :total="total">
-          </el-pagination>
-        </div>
+        <el-backtop></el-backtop>
       </div>
-      <el-backtop></el-backtop>
     </div>
+    <Footer></Footer>
   </div>
 </template>
 
@@ -103,17 +111,18 @@ import Column from "@/components/column";
 import Broadside from "@/components/Broadside";
 import {queryData} from "@/api/post"
 import {formatTime} from "@/utils"
+import Header from "@/components/Header";
 
 const defaultQueryParam = {
   page: 0,
-  size: 10,
+  size: 15,
   keyword: null,
   ending: null,
   essence: null,
   sort: ['_id,desc']
 }
 export default {
-  components: {Column, Broadside},
+  components: {Header, Column, Broadside},
   // components: {Column}
   data() {
     return {
@@ -124,7 +133,7 @@ export default {
       sortTypeValue: -1,
       queryParam: {
         page: 0,
-        size: 10,
+        size: 8,
         keyword: null,
         categoryId: null,
         ending: null,
@@ -141,12 +150,12 @@ export default {
     $route: {
       handler(newVal, oldVal) {
         // console.log(newVal)
-        this.queryParam.categoryId = newVal.query.categoryId
         this.filterTypeValue = 0
         this.sortTypeValue = -1
-        Object.assign(this.queryParam,defaultQueryParam)
+        Object.assign(this.queryParam, defaultQueryParam)
         /*console.log("keyword")
         console.log(this.queryParam.keyword)*/
+        this.queryParam.categoryId = newVal.query.categoryId
         this.getData()
       },
       deep: true
@@ -200,7 +209,7 @@ export default {
       this.getData()
     },
     handleCurrentChange(val) {
-      this.queryParam.currentPage = val
+      this.queryParam.page = val - 1
       this.getData()
     },
     getQueryParam() {
@@ -253,9 +262,12 @@ export default {
           break
       }
     },
-    getFilterData() {
-
-
+    getKeyword(val) {
+      Object.assign(this.queryParam,defaultQueryParam)
+      this.filterTypeValue = 0
+      this.sortTypeValue = -1
+      this.queryParam.keyword = val
+      this.getData()
     }
   }
 }
