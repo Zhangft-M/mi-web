@@ -1,3 +1,4 @@
+import {getCategories} from "@/api/category";
 
 export const state = () => {
   return {
@@ -12,11 +13,14 @@ export const mutations = {
 }
 
 export const actions = {
-  setCategorise({commit}, data) {
-    if (data != null) {
-      console.log("设置状态:")
-      console.log(data)
-      commit("SET_CATEGORY_LIST", data)
-    }
+  setCategorise({commit}) {
+    return new Promise((resolve, reject) => {
+      getCategories().then((data)=>{
+        commit("SET_CATEGORY_LIST", data)
+        resolve(data)
+      }).catch((error)=>{
+        reject(error)
+      })
+    })
   }
 }

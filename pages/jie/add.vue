@@ -38,14 +38,14 @@
                     <div class="layui-col-md3">
                       <label class="layui-form-label">所属产品</label>
                       <div class="layui-input-block">
-                        <select name="project">
+                        <!--<select name="project">
                           <option></option>
                           <option value="layui">layui</option>
                           <option value="独立版layer">独立版layer</option>
                           <option value="独立版layDate">独立版layDate</option>
                           <option value="LayIM">LayIM</option>
                           <option value="Fly社区模板">Fly社区模板</option>
-                        </select>
+                        </select>-->
                       </div>
                     </div>
                     <div class="layui-col-md3">
@@ -72,13 +72,13 @@
                     <div class="layui-inline">
                       <label class="layui-form-label">悬赏飞吻</label>
                       <div class="layui-input-inline" style="width: 190px;">
-                        <select name="experience">
+                        <!--<select name="experience">
                           <option value="20">20</option>
                           <option value="30">30</option>
                           <option value="50">50</option>
                           <option value="60">60</option>
                           <option value="80">80</option>
-                        </select>
+                        </select>-->
                       </div>
                       <div class="layui-form-mid layui-word-aux">发表后无法更改飞吻</div>
                     </div>
@@ -109,7 +109,13 @@
 <script>
 import TinyEditor from "@/components/TinyEditor";
 export default {
-  components: {TinyEditor}
+  components: {TinyEditor},
+  data(){
+    return{
+      options: [],
+      value: ''
+    }
+  }
 }
 </script>
 

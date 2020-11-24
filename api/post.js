@@ -19,3 +19,10 @@ export function queryData(params) {
     }
   )
 }
+
+export function getDataById(postId) {
+  return request({
+    url: `/post/${postId}`,
+    method: 'get'
+  })
+}

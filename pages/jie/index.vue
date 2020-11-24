@@ -44,7 +44,7 @@
                         <div class="layui-col-md12">
                           <h2>
                             <a class="layui-badge">分享</a>
-                            <nuxt-link to="/jie/detail" target="_blank">
+                            <nuxt-link :to="'/jie/detail?postId='+postItem.id" target="_blank">
                         <span class="title-font text-title">
                           {{ postItem.title| hideTitle() }}
                         </span>
@@ -95,7 +95,7 @@
               layout="total, prev, pager, next, jumper"
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
-              :total="total">
+              :total="parseInt(total)">
             </el-pagination>
           </div>
         </div>

@@ -8,7 +8,7 @@
           <div class="layui-col-md6" v-for="postItem in postItems" :key="postItem.categoryId">
             <el-card class="hvr-bob">
               <div slot="header" class="clearfix">
-                <span style="font-family: 幼圆,serif;color: #5FB878"><i class="fa fa-bullseye"></i>&nbsp;{{parseCategory(postItem.categoryId)}}</span>
+                <span style="font-family: 幼圆,serif;color: #5FB878"><i class="fa fa-bullseye"></i>&nbsp;{{postItem.categoryId | parseCategory(category)}}</span>
                 <nuxt-link :to="'/jie?categoryId=' + postItem.categoryId" style="float: right; padding: 3px 0">更多</nuxt-link>
               </div>
               <div class="content-card" style="width: 500px">
@@ -24,7 +24,7 @@
                         </nuxt-link>
                         <h2>
                           <a class="layui-badge">动态</a>
-                          <nuxt-link to="/jie/detail" target="_blank">
+                          <nuxt-link :to="'/jie/detail?postId='+postData.id" target="_blank">
                         <span class="title-font">
                           {{ postData.title }}
                         </span>
@@ -78,7 +78,7 @@ export default {
       postItems: []
     }
   },
-  created() {
+  mounted() {
     this.category = this.$store.state.category.categoryList
     this.getData()
   },
@@ -86,6 +86,18 @@ export default {
     parseDate: function (val) {
       let date = new Date(Date.parse(val.replace(/-/g, "/")));
       return formatTime(date, null);
+    },
+    parseCategory: function (val,category) {
+      // console.log("当前的数据id" + val)
+      // let name = "";
+      // console.log()
+      for (let i = 0; i < category.length; i++) {
+        if (val === category[i].id){
+          //console.log(category[i].name)
+          return category[i].name
+        }
+      }
+      // return name
     }
   },
   methods: {
@@ -102,17 +114,6 @@ export default {
     },
     getKeyword(val){
       this.keyword = val
-    },
-    parseCategory(val) {
-      // console.log("当前的数据id" + val)
-      let name = "";
-      this.category.forEach(value => {
-        // console.log("遍历的id" + value.id + "名称" + value.name)
-        if (parseInt(val) === parseInt(value.id)){
-          name = value.name
-        }
-      })
-      return name
     }
   }
 }
