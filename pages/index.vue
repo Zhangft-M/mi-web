@@ -68,18 +68,19 @@ import Column from "../components/column";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import {formatTime} from "@/utils"
+import Particles from "@/components/Particles";
 
 export default {
-  components: {Column,Footer, Header, Broadside},
+  components: {Particles, Column,Footer, Header, Broadside},
   data() {
     return {
       keyword: null,
-      category: [],
+      category: this.$store.state.category.categoryList,
       postItems: []
     }
   },
   mounted() {
-    this.category = this.$store.state.category.categoryList
+    // this.category = this.$store.state.category.categoryList
     this.getData()
   },
   filters:{

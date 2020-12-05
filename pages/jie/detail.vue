@@ -147,13 +147,15 @@
       </div>
     </div>
     <el-dialog :title="'回复'+ replyData.toUserName" :visible.sync="isShowReplyDialog" @close="isShowReplyDialog = false">
-      <el-input
-        type="textarea"
-        :autosize="{ minRows: 2, maxRows: 4}"
-        :placeholder="'@'+replyData.toUserName + ':'"
-        v-model="replyData.content">
-      </el-input>
-      <el-button @click="submitReply()">提交</el-button>
+      <div style="height: 90px">
+        <el-input
+          type="textarea"
+          :autosize="{ minRows: 2, maxRows: 6}"
+          :placeholder="'@'+replyData.toUserName + ':'"
+          v-model="replyData.content">
+        </el-input>
+        <el-button style="float: right;margin-top: 10px" size="mini" @click="submitReply()">提交</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -189,7 +191,7 @@ export default {
         toUserName: '',
         parentId: '',
         postId: '',
-        userId: this.$store.state.user.id
+        userId: 1// this.$store.state.user.id
       }
     }
   },
@@ -224,6 +226,8 @@ export default {
       }
     },
     thumbUp(data) {
+      console.log("点赞的对象")
+      console.log(data)
       // this.isThumbUp = !this.isThumbUp
       const thumbUpData = {
         userId: 1,// this.$store.state.user.id,

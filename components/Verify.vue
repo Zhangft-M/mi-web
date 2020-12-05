@@ -4,6 +4,11 @@
 
 <script>
 export default {
+  head(){
+    return{
+      script:[{src: 'http://g.alicdn.com/sd/ncpc/nc.js?t=2015052012'}]
+    }
+  },
   name: "Verify",
   mounted() {
     var nc_token = ["FFFF0N000000000098E9", (new Date()).getTime(), Math.random()].join(':');
@@ -13,7 +18,7 @@ export default {
         appkey: "FFFF0N000000000098E9",
         scene: "nc_login",
         token: nc_token,
-        customWidth: 300,
+        customWidth: 225,
         trans:{"key1":"code0"},
         elementID: ["usernameID"],
         is_Opt: 0,

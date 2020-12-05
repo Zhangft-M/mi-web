@@ -19,7 +19,6 @@ export default {
       }
     ],
     script: [
-      {src: 'http://g.alicdn.com/sd/ncpc/nc.js?t=2015052012'},
       {src: '/layui/layui.js'},
       {src: '/layui/layui.all.js'}
     ]

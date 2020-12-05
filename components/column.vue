@@ -40,19 +40,14 @@ export default {
   name: "Column",
   data() {
     return {
-      categoryList: []
+      categoryList: this.$store.state.category.categoryList
     }
   },
   created() {
-    if (this.$store.state.category.categoryList.length > 0) {
-      console.log("从状态树中获取")
-      this.categoryList = this.$store.state.category.categoryList
-    } else {
-      this.$store.dispatch('category/setCategorise').then((result)=>{
-        this.categoryList = result
-        // console.log(result)
-      })
-    }
+    this.$store.dispatch('category/setCategorise').then((result)=>{
+      this.categoryList = result
+      // console.log(result)
+    })
   },
   filters: {
     filterPath(val) {
