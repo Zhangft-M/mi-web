@@ -27,7 +27,7 @@
                     </div>
                   </div>
                   <div style="padding-top: 5px;padding-bottom: 10px">
-                    <Verify></Verify>
+                    <Verify @getVerifyData = "getVerifyData"></Verify>
                   </div>
                   <div class="layui-form-item">
                     <button class="layui-btn" lay-filter="*" lay-submit @click="handleLogin()">立即登录</button>
@@ -64,7 +64,8 @@ export default {
       userInfo:{
         userName: '',
         password: ''
-      }
+      },
+      verifyData: null
     }
   },
   created() {
@@ -79,6 +80,9 @@ export default {
     },
     handleLogin(){
       console.log(this.userInfo.userName)
+    },
+    getVerifyData(payload){
+      this.verifyData = payload
     }
   }
 

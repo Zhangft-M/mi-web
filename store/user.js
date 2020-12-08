@@ -1,44 +1,51 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { login, logout, getInfo } from '../api/user'
+import { getToken, setToken, removeToken } from '../utils/auth'
+
 
  export const state = () => {
   return {
     token: getToken(),
-    name: '',
-    id: '',
-    avatar: ''
+    userInfo:{
+      userId: '',
+      avatar: '',
+      nickName: '',
+      point: 0,
+    }
   }
 }
 
+const defaultUserInfo = {
+  userId: null,
+  avatar: null,
+  nickName: null,
+  point: 0,
+}
 // export const state = getDefaultState()
 
 export const mutations = {
   RESET_STATE: (state) => {
-    Object.assign(state, state())
+    Object.assign(state.token, "")
+    Object.assign(state.userInfo,defaultUserInfo)
   },
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_USER_ID: (state,id) =>{
+    state.userInfo.userId = id
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
-  },
-  SET_USERID: (state,id) =>{
-    state.id = id
+  SET_USER_INFO:(state,userInfo)=>{
+    state.userInfo = userInfo
   }
 }
 
 export const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+      login(userInfo).then(data => {
+        commit('SET_TOKEN', data.access_token)
+        commit('SET_USER_ID',data.userId)
+        setToken(data.access_token)
         resolve()
       }).catch(error => {
         reject(error)
@@ -49,15 +56,15 @@ export const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
+      getInfo(state.userInfo.userId).then(data => {
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
-        const { id, name, avatar } = data
+        /*const { id, name, avatar } = data
         commit('SET_USERID',id)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        commit('SET_NAME', name)*/
+        console.log(data)
+        commit('SET_USER_INFO', data)
         resolve(data)
       }).catch(error => {
         reject(error)

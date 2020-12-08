@@ -8,8 +8,10 @@
           <div class="layui-col-md6" v-for="postItem in postItems" :key="postItem.categoryId">
             <el-card class="hvr-bob">
               <div slot="header" class="clearfix">
-                <span style="font-family: 幼圆,serif;color: #5FB878"><i class="fa fa-bullseye"></i>&nbsp;{{postItem.categoryId | parseCategory(category)}}</span>
-                <nuxt-link :to="'/jie?categoryId=' + postItem.categoryId" style="float: right; padding: 3px 0">更多</nuxt-link>
+                <span style="font-family: 幼圆,serif;color: #5FB878"><i
+                  class="fa fa-bullseye"></i>&nbsp;{{ postItem.categoryId | parseCategory(category) }}</span>
+                <nuxt-link :to="'/jie?categoryId=' + postItem.categoryId" style="float: right; padding: 3px 0">更多
+                </nuxt-link>
               </div>
               <div class="content-card" style="width: 500px">
                 <ul class="fly-list">
@@ -37,8 +39,9 @@
                             <!--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
                             <i class="layui-badge fly-badge-vip">VIP3</i>-->
                           </nuxt-link>
-                          <span>{{postData.updateTime | parseDate()}}</span>
-                          <span class="fly-list-kiss layui-hide-xs" title="悬赏积分"><i class="fa fa-diamond"></i> {{ postData.reward }}</span>
+                          <span>{{ postData.updateTime | parseDate() }}</span>
+                          <span class="fly-list-kiss layui-hide-xs" title="悬赏积分"><i
+                            class="fa fa-diamond"></i> {{ postData.reward }}</span>
                           <span v-show="postData.ending" class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
                           <span class="fly-list-nums">
                           <i class="fa fa-commenting"></i> {{ postData.commentCount }}
@@ -62,16 +65,16 @@
   </div>
 </template>
 <script>
-import {getRecommendData} from "@/api/post";
+import {getRecommendData} from "../api/post";
 import Broadside from "../components/Broadside";
 import Column from "../components/column";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import {formatTime} from "@/utils"
-import Particles from "@/components/Particles";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import {formatTime} from "../utils"
+import Particles from "../components/Particles";
 
 export default {
-  components: {Particles, Column,Footer, Header, Broadside},
+  components: {Particles, Column, Footer, Header, Broadside},
   data() {
     return {
       keyword: null,
@@ -83,17 +86,17 @@ export default {
     // this.category = this.$store.state.category.categoryList
     this.getData()
   },
-  filters:{
+  filters: {
     parseDate: function (val) {
       let date = new Date(Date.parse(val.replace(/-/g, "/")));
       return formatTime(date, null);
     },
-    parseCategory: function (val,category) {
+    parseCategory: function (val, category) {
       // console.log("当前的数据id" + val)
       // let name = "";
       // console.log()
       for (let i = 0; i < category.length; i++) {
-        if (val === category[i].id){
+        if (val === category[i].id) {
           //console.log(category[i].name)
           return category[i].name
         }
@@ -113,7 +116,7 @@ export default {
       })
       // console.log("获取主页数据")
     },
-    getKeyword(val){
+    getKeyword(val) {
       this.keyword = val
     }
   }
@@ -131,5 +134,6 @@ export default {
   font-family: 清松手写体2, fantasy;
   font-size: 20px;
 }
+html body{margin-top: 61px;}
 </style>
 

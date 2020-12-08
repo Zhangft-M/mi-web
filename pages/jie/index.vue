@@ -28,7 +28,7 @@
                 <el-card class="box-card animate__animated animate__lightSpeedInLeft hvr-curl-top-right"
                          shadow="hover">
                   <div class="layui-row">
-                    <div class="fly-list-badge" v-show="postItem.level === 1">
+                    <div class="fly-list-badge" v-show="postItem.top">
                       <span class="layui-badge layui-bg-black">置顶</span>
                       <!--<span class="layui-badge layui-bg-red">精帖</span>-->
                     </div>

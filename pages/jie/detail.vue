@@ -1,7 +1,5 @@
 <template>
   <div>
-    <span class="header"></span>
-    <div style="background: #4F99CF">
       <div class="layui-container">
         <div class="layui-row layui-col-space15">
           <div class="layui-col-md12">
@@ -145,7 +143,6 @@
           </div>
         </div>
       </div>
-    </div>
     <el-dialog :title="'回复'+ replyData.toUserName" :visible.sync="isShowReplyDialog" @close="isShowReplyDialog = false">
       <div style="height: 90px">
         <el-input
@@ -164,6 +161,7 @@
 import {getDataById} from "@/api/post";
 import {addComment, getCommentDataByPostId} from "@/api/comment";
 import {thumbUp} from "@/api/thumbUp";
+import getters from "../../store/getters";
 
 const defaultReplyData = {
   content: '',
@@ -191,15 +189,17 @@ export default {
         toUserName: '',
         parentId: '',
         postId: '',
-        userId: 1// this.$store.state.user.id
+        userId: getters.userId == null ? -1 : getters.userId
       }
     }
   },
   created() {
     this.initData()
-    this.$store.dispatch("thumbUpList/setThumbUpIds", 1).then(result => {
-      this.thumbUpList = result
-    })
+    if (this.userId !== -1){
+      this.$store.dispatch("thumbUpList/setThumbUpIds", this.userId).then(result => {
+        this.thumbUpList = result
+      })
+    }
   },
   methods: {
     initData() {
@@ -226,8 +226,13 @@ export default {
       }
     },
     thumbUp(data) {
-      console.log("点赞的对象")
-      console.log(data)
+      if (this.$store.state.user.token == null || this.$store.state.user.token === '') {
+        // 未登录,跳转到登录页
+        this.toLogin()
+        return
+      }
+      // console.log("点赞的对象")
+      // console.log(data)
       // this.isThumbUp = !this.isThumbUp
       const thumbUpData = {
         userId: 1,// this.$store.state.user.id,
@@ -249,7 +254,6 @@ export default {
         thumbUp(thumbUpData).then(() => {
           data.voteUp += 1
           this.$store.dispatch('thumbUpList/addThumbUpId', data.id);
-
         })
       }
     },
@@ -257,6 +261,7 @@ export default {
       // const _this = this
       if (this.$store.state.user.token == null || this.$store.state.user.token === '') {
         // 未登录,跳转到登录页
+        this.toLogin()
         return
       }
       const commentData = {
@@ -274,6 +279,11 @@ export default {
       })
     },
     showReplyDialog(data, parentData) {
+      if (this.$store.state.user.token == null || this.$store.state.user.token === '') {
+        // 未登录,跳转到登录页
+        this.toLogin()
+        return
+      }
       this.chooseData = parentData == null ? data : parentData
       /*if (this.$store.state.user.token == null || this.$store.state.user.token === '') {
         // 未登录,跳转到登录页
@@ -285,6 +295,11 @@ export default {
       this.replyData.postId = this.postDetails.id
     },
     submitReply() {
+      if (this.$store.state.user.token == null || this.$store.state.user.token === '') {
+        // 未登录,跳转到登录页
+        this.toLogin()
+        return
+      }
       addComment(this.replyData).then((data) => {
         const index = this.commentData.indexOf(this.chooseData)
         this.commentData[index].children.push(data)
@@ -296,6 +311,13 @@ export default {
         this.chooseData = null
       })
 
+    },
+    toLogin(){
+      this.$confirm('未登录,是否去登录?').then(()=>{
+        this.$router.push('/login')
+      }).catch(()=>{
+
+      })
     }
 
   }
@@ -313,4 +335,21 @@ export default {
 .thumb-up-color {
   color: #5FB878;
 }
+
+html,body{ width: 100%; height: 100%; background-color: #8FCDA0; }
+
+html{
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body{
+  font:normal 75% Arial, Helvetica, sans-serif;
+}
+
+canvas{
+  display:block;
+  vertical-align:bottom;
+}
+
+
 </style>

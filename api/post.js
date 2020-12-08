@@ -5,7 +5,7 @@ import {stringify} from 'qs'
 export function getRecommendData() {
   return request(
     {
-      url: `/post/recommend`,
+      url: `/miPost/post/recommend`,
       method: 'get'
     }
   )
@@ -14,7 +14,7 @@ export function getRecommendData() {
 export function queryData(params) {
   return request(
     {
-      url: `/post?${stringify(params, {indices: false})}`,
+      url: `/miPost/post?${stringify(params, {indices: false})}`,
       method: 'get'
     }
   )
@@ -22,7 +22,7 @@ export function queryData(params) {
 
 export function getDataById(postId) {
   return request({
-    url: `/post/${postId}`,
+    url: `/miPost/post/${postId}`,
     method: 'get'
   })
 }

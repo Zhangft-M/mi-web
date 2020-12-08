@@ -2,14 +2,14 @@ import request from '@/utils/request'
 
 export function getThumbUpListByUserId(userId){
   return request({
-    url: `thumbUp/${userId}`,
+    url: `/miPost/thumbUp/${userId}`,
     method: 'get'
   })
 }
 
 export function thumbUp(data){
   return request({
-    url: `thumbUp`,
+    url: `/miPost/thumbUp`,
     method: 'put',
     data
   })
