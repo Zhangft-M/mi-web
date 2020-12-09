@@ -1,5 +1,5 @@
 import da from "element-ui/src/locale/lang/da";
-import {getThumbUpListByUserId} from "@/api/thumbUp";
+import {getThumbUpList} from "../api/thumbUp";
 
 export const state = ()=>{
   return {
@@ -22,9 +22,9 @@ export const mutations = {
 
 export const actions = {
   //todo:登录时的操作
-  setThumbUpIds({commit}, id) {
+  setThumbUpIds({commit}) {
     return new Promise((resolve, reject) => {
-      getThumbUpListByUserId(id).then((data)=>{
+      getThumbUpList().then((data)=>{
         commit("SET_THUMB_UP_IDS", data)
         resolve(data)
       }).catch((error)=>{

@@ -123,7 +123,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .content-card {
   padding-top: 10px;
   padding-bottom: 10px;

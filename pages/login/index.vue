@@ -88,6 +88,8 @@ export default {
       }
       this.$store.dispatch('user/login',requestData).then(()=>{
         this.$store.dispatch('user/getInfo').then(()=>{
+          this.$store.dispatch('thumbUpList/setThumbUpIds')
+          this.$store.dispatch('favoritesPost/getFavoritesPostId')
           this.isLoading = false
           if (window.history.length <= 1){
             this.$router.push('/');

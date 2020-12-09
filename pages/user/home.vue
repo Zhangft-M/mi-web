@@ -1,33 +1,32 @@
 <template>
-  <div style="background-color: #0C0C0C">
+  <div>
     <particles></particles>
     <div id="wrapper">
       <el-row>
         <el-col :span="20" :offset="2">
           <el-card class="fly-home fly-panel myHome">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
-              <i class="iconfont icon-renzheng" title="Fly社区认证"></i>
-              <h1>
-                贤心
-                <i class="iconfont icon-nan"></i>
-                <!-- <i class="iconfont icon-nv"></i>  -->
-                <!--
-                <span style="color:#c00;">（管理员）</span>
-                <span style="color:#5FB878;">（社区之光）</span>
-                <span>（该号已被封）</span>
-                -->
-              </h1>
-              <p class="fly-home-info">
-                <i class="iconfont icon-shijian"></i><span>2015-6-17 加入</span>
-                <i class="iconfont icon-chengshi"></i><span>来自杭州</span>
-              </p>
+            <el-avatar shape="circle" :size="100" fit="cover" :src="userInfo.avatar"></el-avatar>
+            <i class="iconfont icon-renzheng" title="Fly社区认证"></i>
+            <h1>
+              {{ userInfo.nickName }}
+              <i class="iconfont icon-nan"></i>
+              <!-- <i class="iconfont icon-nv"></i>  -->
+              <!--
+              <span style="color:#c00;">（管理员）</span>
+              <span style="color:#5FB878;">（社区之光）</span>
+              <span>（该号已被封）</span>
+              -->
+            </h1>
+            <p class="fly-home-info">
+              <i class="iconfont icon-shijian"></i><span>{{ userInfo.createTime }} 加入</span>
+            </p>
 
-              <p class="fly-home-sign">（人生仿若一场修行）</p>
+            <p class="fly-home-sign">{{ userInfo.sign }}</p>
 
-              <div class="fly-sns" data-user="">
-                <a href="javascript:;" class="layui-btn layui-btn-primary fly-imActive" data-type="addFriend">加为好友</a>
-                <a href="javascript:;" class="layui-btn layui-btn-normal fly-imActive" data-type="chat">发起会话</a>
-              </div>
+            <div class="fly-sns" data-user="">
+              <a href="javascript:;" class="layui-btn layui-btn-primary fly-imActive" data-type="addFriend">加为好友</a>
+              <a href="javascript:;" class="layui-btn layui-btn-normal fly-imActive" data-type="chat">发起会话</a>
+            </div>
           </el-card>
         </el-col>
       </el-row>
@@ -36,13 +35,13 @@
         <el-col :span="9" :offset="2">
           <el-card>
             <div class="fly-panel">
-              <h3 class="fly-panel-title">贤心 最近的提问</h3>
+              <h3 class="fly-panel-title">{{ userInfo.nickName }} 最近发的帖子</h3>
               <ul class="jie-row">
-                <li>
-                  <span class="fly-jing">精</span>
-                  <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                  <i>刚刚</i>
-                  <em class="layui-hide-xs">1136阅/27答</em>
+                <li v-for="item in myPost" :key="item.id">
+                  <span v-show="item.essence" class="fly-jing">精</span>
+                  <nuxt-link target="_blank" :to="'/jie/detail?postId=' + item.id">{{ item.title }}</nuxt-link>
+                  <i>{{ item.createTime | parseDate }}</i>
+                  <em class="layui-hide-xs">{{ item.viewCount }}阅/{{ item.commentCount }}答</em>
                 </li>
                 <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何求解</i></div> -->
               </ul>
@@ -52,76 +51,79 @@
         <el-col :span="9" :offset="2">
           <el-card>
             <div class="fly-panel">
-              <h3 class="fly-panel-title">贤心 最近的回答</h3>
+              <h3 class="fly-panel-title">{{ userInfo.nickName }} 最近的收藏</h3>
               <ul class="home-jieda">
-                <li>
-                  <p>
-                    <span>1分钟前</span>
-                    在<a href="" target="_blank">tips能同时渲染多个吗?</a>中回答：
-                  </p>
-                  <div class="home-dacontent">
-                    尝试给layer.photos加上这个属性试试：
-                    <pre>
-full: true
-</pre>
-                    文档没有提及
-                  </div>
+                <li v-for="item in myFavorites" :key="item.id">
+                  <span v-show="item.essence" class="fly-jing">精</span>
+                  <nuxt-link target="_blank" :to="'/jie/detail?postId=' + item.id">{{ item.title }}</nuxt-link>
+                  <i>{{ item.createTime | parseDate }}</i>
+                  <em class="layui-hide-xs">{{ item.viewCount }}阅/{{ item.commentCount }}答</em>
                 </li>
-                <li>
-                  <p>
-                    <span>5分钟前</span>
-                    在<a href="" target="_blank">在Fly社区用的是什么系统啊?</a>中回答：
-                  </p>
-                  <div class="home-dacontent">
-                    Fly社区采用的是NodeJS。分享出来的只是前端模版
-                  </div>
-                </li>
-
                 <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有回答任何问题</span></div> -->
               </ul>
             </div>
           </el-card>
         </el-col>
       </el-row>
-
-      <div class="layui-container">
-        <div class="layui-row layui-col-space15">
-          <div class="layui-col-md6 fly-home-jie">
-
-          </div>
-
-          <div class="layui-col-md6 fly-home-da">
-
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import Particles from "../../components/Particles";
+import {getInfo} from "../../api/user";
+import {getByUserId, getUserFavorites} from "../../api/post";
+import {formatTime} from "../../utils";
+
 export default {
-  components: {Particles, Footer, Header},
+  components: {Particles},
   head() {
     return {
       title: '用户主页',
       link: [
         {rel: 'stylesheet', href: '/css/custom.css'},
-        {rel: 'stylesheet', href: '/login/libs/sweetalert2/sweetalert2.min.css'}
       ]
     }
+  },
+  data() {
+    return {
+      userInfo: {},
+      myPost: [],
+      myFavorites: [],
+    }
+  },
+  created() {
+    const userId = this.$route.query.userId
+    getInfo(userId).then((data) => {
+      this.userInfo = data
+    }).catch(() => {
+      this.$message.error('出错啦,获取失败');
+    })
+    getByUserId(userId).then((data) => {
+      this.myPost = data
+    }).catch(() => {
+      this.$message.error('出错啦,获取该用户发的帖子失败')
+    })
+    getUserFavorites(userId).then((data) => {
+      this.myFavorites = data
+    }).catch(() => {
+      this.$message.error('出错啦,获取用户收藏的帖子失败')
+    })
+  },
+  filters: {
+    parseDate: function (val) {
+      let date = new Date(Date.parse(val.replace(/-/g, "/")));
+      return formatTime(date, null);
+    },
   }
 }
 </script>
 
 <style scoped>
-.myHome{
+.myHome {
   background-image: url("https://usms-news-pic.oss-cn-beijing.aliyuncs.com/images/2020/05/27/15905787747671265605228987219970.jpg");
   opacity: 0.7;
-  background-size:cover
+  background-size: cover
 }
 
 </style>

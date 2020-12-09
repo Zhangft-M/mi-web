@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getThumbUpListByUserId(userId){
+export function getThumbUpList(){
   return request({
-    url: `/miPost/thumbUp/${userId}`,
+    url: `/miPost/thumbUp/`,
     method: 'get'
   })
 }

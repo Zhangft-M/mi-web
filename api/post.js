@@ -26,3 +26,17 @@ export function getDataById(postId) {
     method: 'get'
   })
 }
+
+export function getByUserId(userId) {
+  return request({
+    url: `/miPost/post/userId/${userId}`,
+    method: 'get'
+  })
+}
+
+export function getUserFavorites(userId) {
+  return request({
+    url: `/miPost/post/favorites/${userId}`,
+    method:'get'
+  })
+}
