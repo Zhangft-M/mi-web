@@ -7,8 +7,12 @@ import { getToken, setToken, removeToken } from '../utils/auth'
     token: getToken(),
     userInfo:{
       userId: '',
+      userName: '',
       avatar: '',
       nickName: '',
+      gender: '',
+      phoneNumber: '',
+      email: '',
       point: 0,
     }
   }

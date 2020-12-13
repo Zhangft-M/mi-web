@@ -8,7 +8,7 @@
     <!--    <script src="/particles/js/app.js"></script>-->
     <div>
       <el-row>
-        <el-col :span="4" :offset="20">
+        <el-col :span="4" :offset="21">
           <el-select v-model="chooseParticles" placeholder="主题" @change="selectTheme" class="select-item select-form">
             <el-option style="border-radius: 10px"
               v-for="item in themeItems"
@@ -87,7 +87,7 @@ export default {
   opacity: 0.75;
   border-radius: 8px;
   width: 100px;
-  margin-top: 20px;
+  margin-top: 65px;
   position: relative;
 }
 .input.el-input__inner {

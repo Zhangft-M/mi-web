@@ -107,11 +107,11 @@
 </template>
 
 <script>
-import Column from "@/components/column";
-import Broadside from "@/components/Broadside";
-import {queryData} from "@/api/post"
-import {formatTime} from "@/utils"
-import Header from "@/components/Header";
+import Column from "../../components/layout/column";
+import Broadside from "../../components/layout/Broadside";
+import {queryData} from "../../api/post"
+import {formatTime} from "../../utils"
+import Header from "../../components/layout/Header";
 
 const defaultQueryParam = {
   page: 0,

@@ -9,6 +9,7 @@ body{
 	/*background-color: #f7fafc;*/
 	text-align: center;
 	font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+  padding-right: 0 !important;
 }
 html,body{
 	height: 100%;

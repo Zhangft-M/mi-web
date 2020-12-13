@@ -69,6 +69,7 @@ body {
     color: #333;
     font-family: "Microsoft YaHei",PingFangSC-Regular,Verdana,Arial,Helvetica,sans-serif,"宋体";
     font-size: 12px;
+    padding-right: 0 !important;
 }
 
 /*----- 去掉虚框 -----*/

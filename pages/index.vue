@@ -1,7 +1,8 @@
 <template>
   <div>
+    <Particles></Particles>
     <Header :is-search="false"></Header>
-    <div style="background: #92B8B1">
+    <div>
       <div class="layui-container">
         <Column ref="column"></Column>
         <div class="layui-row layui-col-space12" style="padding-left: 20px">
@@ -66,15 +67,23 @@
 </template>
 <script>
 import {getRecommendData} from "../api/post";
-import Broadside from "../components/Broadside";
-import Column from "../components/column";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Broadside from "../components/layout/Broadside";
+import Column from "../components/layout/column";
+import Header from "../components/layout/Header";
+import Footer from "../components/layout/Footer";
 import {formatTime} from "../utils"
 import Particles from "../components/Particles";
 
 export default {
   components: {Particles, Column, Footer, Header, Broadside},
+  head() {
+    return {
+      title: '首页',
+      link: [
+        {rel: 'stylesheet', href: '/css/custom.css'},
+      ]
+    }
+  },
   data() {
     return {
       keyword: null,
@@ -134,6 +143,6 @@ export default {
   font-family: 清松手写体2, fantasy;
   font-size: 20px;
 }
-html body{margin-top: 61px;}
+html body{margin-top: 0px;}
 </style>
 

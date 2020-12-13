@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import Column from "@/components/column";
+import Column from "../../components/layout/column";
 export default {
   components: {Column}
 }

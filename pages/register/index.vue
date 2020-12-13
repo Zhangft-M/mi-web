@@ -8,26 +8,23 @@
         <div class="switch_bottom" id="switch_bottom"></div>
       </nav>
       <div style="float:right;padding-left: 50px">
-        <el-form class="login-register-form" label-width="auto" :model="registerData" size="medium">
-          <el-form-item label="用户名">
+        <el-form class="login-register-form" label-width="auto" :rules="rules" ref="registerForm" :model="registerData"
+                 size="medium">
+          <el-form-item label="用户名" prop="usernameRule">
             <el-input type="text" v-model="registerData.username" style="width: 300px"></el-input>
           </el-form-item>
-          <el-form-item label="手机号">
+          <el-form-item label="手机号" prop="passwordRule">
             <el-input type="text" v-model.number="registerData.phoneNumber" style="width: 300px"></el-input>
           </el-form-item>
-          <el-form-item label="验证码">
-            <el-input type="text" v-model="registerData.username" style="width: 300px">
-              <el-button slot="suffix" size="mini" :disabled="isSend" round @click="senSms">{{ isSend ? countdown : sendTxt }}</el-button>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="密码">
+          <VerifyCode :phoneNumber="getPhoneNumber" ref="verifyCode"></VerifyCode>
+          <el-form-item label="密码" prop="passwordRule">
             <el-input type="password" v-model="registerData.password" style="width: 300px"></el-input>
           </el-form-item>
-          <el-form-item label="确认密码">
+          <el-form-item label="确认密码" prop="checkedPasswordRule">
             <el-input type="password" v-model="registerData.checkedPassword" style="width: 300px"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="submit" class="submit_btn" style="width: 300px" round>注册</el-button>
+            <el-button type="submit" class="submit_btn" style="width: 300px" round @click="register">注册</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -37,19 +34,19 @@
 </template>
 
 <script>
-import Particles from "@/components/Particles";
-import {sendSms} from "../../api/sms";
+import Particles from "../../components/Particles";
+import VerifyCode from "../../components/VerifyCode";
+import {registe} from "../../api/user";
 
 export default {
-  components: {Particles},
+  components: {VerifyCode, Particles},
   head() {
     return {
-      script: [
-        {src: '/login/libs/sweetalert2/sweetalert2.min.js'}],
+      title: '注册',
+      script: [],
       link: [
         {rel: 'stylesheet', href: '/login/css/base.css'},
-        {rel: 'stylesheet', href: '/login/css/login.css'},
-        {rel: 'stylesheet', href: '/login/libs/sweetalert2/sweetalert2.min.css'}
+        {rel: 'stylesheet', href: '/login/css/login.css'}
       ]
     }
   },
@@ -59,36 +56,44 @@ export default {
         username: '',
         phoneNumber: '',
         password: '',
-        checkedPassword: ''
+        checkedPassword: '',
+        verifyCode: ''
       },
-      sendTxt: '发送',
-      countdown: 60,
-      isSend: false,
-
+      rules: {
+        usernameRule: [{required: true, message: '请输入用户名', trigger: 'blur'}],
+        phoneNumberRule: [{type: "number",required: true, message: '请输入手机号', trigger: 'blur'}],
+        verifyCodeRule: [{type: "number",required: true, message: '验证码为六位数字', trigger: 'blur'}],
+        passwordRule: [{required: true, message: '请输入密码', trigger: 'blur'}],
+        checkedPasswordRule: [{required: true, message: '请输入密码', trigger: 'blur'}]
+      }
     }
   },
   methods: {
-    senSms() {
-      if (this.registerData.phoneNumber === '') {
-        this.$message.error("请输入正确的手机号")
-        return
-      }
-      this.isSend = true
-      const auth_timetimer = setInterval(() => {
-        this.countdown--;
-        if (this.countdown <= 0) {
-          this.isSend = false
-          this.countdown = 60
-          clearInterval(auth_timetimer);
+    getPhoneNumber() {
+      this.$refs.registerForm.validateField("phoneNumberRule", (isValidate) => {
+        if (isValidate) {
+          return this.registerData.phoneNumber
+        } else {
+          this.$message.error("请输入正确的手机号")
+          return null;
         }
-      }, 1000);
-      /*sendSms(this.registerData.phoneNumber).then(()=>{
-        this.sendTxt = 60
-        setInterval(function () {
-          _this.sendTxt--
-        },1000)
-        this.sendTxt = '发送'
-      })*/
+      })
+    },
+    register(){
+      this.registerData.verifyCode = this.$refs.verifyCode.getVerifyCode
+      this.$refs.registerForm.validate((isValidate)=>{
+        if (isValidate){
+          const {username,phoneNumber,password,verifyCode} = this.registerData
+          registe({username,phoneNumber,password,verifyCode}).then(()=>{
+            this.$refs.phoneVerifyCodeForm.resetFields()
+            this.$message.success("注册成功")
+            this.$router.push('/login')
+          }).catch((error)=>{
+            this.$refs.phoneVerifyCodeForm.resetFields()
+            this.$message.error(error)
+          })
+        }
+      })
     }
   }
 }
@@ -97,5 +102,6 @@ export default {
 <style>
 .login-register-form input.el-input__inner {
   border-radius: 15px;
+  opacity: 0.85;
 }
 </style>

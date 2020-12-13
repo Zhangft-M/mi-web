@@ -16,7 +16,7 @@
 export default {
   head(){
     return{
-      script:[{src: '/captcha/reCaptchaapi.js'}]
+      script:[{src: 'https://www.recaptcha.net/recaptcha/api.js'}]
     }
   },
   data(){

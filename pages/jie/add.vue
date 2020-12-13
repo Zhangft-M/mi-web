@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import TinyEditor from "@/components/TinyEditor";
+import TinyEditor from "../../components/editor/TinyEditor";
 export default {
   components: {TinyEditor},
   data(){

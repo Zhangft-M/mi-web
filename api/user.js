@@ -8,6 +8,22 @@ export function login(data) {
   })
 }
 
+export function registe(data) {
+  return request({
+    url: '/miUser/user/register',
+    method: 'post',
+    data
+  })
+}
+
+export function phoneNumberLogin(data) {
+  return request({
+    url: '/miAuth//verifyCode/login',
+    method:'post',
+    data
+  })
+}
+
 export function getInfo(userId) {
   return request({
     url: `/miUser/user/info/${userId}`,
