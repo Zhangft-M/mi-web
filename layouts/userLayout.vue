@@ -1,17 +1,7 @@
 <template>
 <div>
-  <el-header>
-    <el-menu
-      default-active=""
-      class="el-menu-demo"
-      mode="horizontal"
-      @select=""
-      background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b">
-      <el-menu-item index="1">处理中心</el-menu-item>
-      <el-menu-item index="3" disabled>消息中心</el-menu-item>
-    </el-menu>
+  <el-header style="background-color: #282C35">
+
   </el-header>
   <el-container style="padding-left: 20px;padding-bottom: 20px">
     <user-aside style="padding-top: 20px"></user-aside>

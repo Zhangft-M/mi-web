@@ -9,12 +9,12 @@
       </nav>
       <div style="float:right;padding-left: 50px">
         <el-form class="login-register-form" :rules="rules" ref="phoneVerifyCodeForm" :model="phoneLoginData">
-          <el-form-item label="手机号" prop="phoneNumberRule" label-width="80px">
-            <el-input type="text" v-model="phoneLoginData.phoneNumber" style="width: 300px">
-              <i slot="prefix" class="fa fa-user"></i>
+          <el-form-item label="手机号" prop="phoneNumber" label-width="80px">
+            <el-input type="text" v-model.number="phoneLoginData.phoneNumber" style="width: 300px">
+              <i slot="prefix" class="fa fa-mobile"></i>
             </el-input>
           </el-form-item>
-          <VerifyCode :phoneNumber="getPhoneNumber" ref="verifyCode"></VerifyCode>
+          <VerifyCode :phoneNumber="getPhoneNumber" :type="0" :email="null" ref="verifyCode"></VerifyCode>
           <el-form-item label-width="80px">
             <el-button type="submit" :loading="isLoading" style="width: 300px" class="submit_btn"
                        @click="login" round>Login
@@ -61,14 +61,14 @@ export default {
       },
       isLoading: false,
       rules:{
-        phoneNumberRule:[{type: "number",required: true, message: '请输入手机号', trigger: 'blur'}],
-        verifyCodeRule: [{type: "number",required: true, message: '验证码为六位数字', trigger: 'blur'}]
+        phoneNumber:[{type: "number",required: true, message: '请输入手机号', trigger: 'blur'}],
+        verifyCode: [{type: "number",required: true, message: '验证码为六位数字', trigger: 'blur'}]
       }
     }
   },
   methods:{
     getPhoneNumber(){
-      this.$refs.phoneVerifyCodeForm.validateField("phoneNumberRule", (isValidate) => {
+      this.$refs.phoneVerifyCodeForm.validateField("phoneNumber", (isValidate) => {
         if (isValidate) {
           return this.phoneLoginData.phoneNumber
         } else {

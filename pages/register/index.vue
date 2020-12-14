@@ -10,17 +10,17 @@
       <div style="float:right;padding-left: 50px">
         <el-form class="login-register-form" label-width="auto" :rules="rules" ref="registerForm" :model="registerData"
                  size="medium">
-          <el-form-item label="用户名" prop="usernameRule">
+          <el-form-item label="用户名" prop="username">
             <el-input type="text" v-model="registerData.username" style="width: 300px"></el-input>
           </el-form-item>
-          <el-form-item label="手机号" prop="passwordRule">
+          <el-form-item label="手机号" prop="password">
             <el-input type="text" v-model.number="registerData.phoneNumber" style="width: 300px"></el-input>
           </el-form-item>
           <VerifyCode :phoneNumber="getPhoneNumber" ref="verifyCode"></VerifyCode>
-          <el-form-item label="密码" prop="passwordRule">
+          <el-form-item label="密码" prop="password">
             <el-input type="password" v-model="registerData.password" style="width: 300px"></el-input>
           </el-form-item>
-          <el-form-item label="确认密码" prop="checkedPasswordRule">
+          <el-form-item label="确认密码" prop="checkedPassword">
             <el-input type="password" v-model="registerData.checkedPassword" style="width: 300px"></el-input>
           </el-form-item>
           <el-form-item>
@@ -60,11 +60,11 @@ export default {
         verifyCode: ''
       },
       rules: {
-        usernameRule: [{required: true, message: '请输入用户名', trigger: 'blur'}],
-        phoneNumberRule: [{type: "number",required: true, message: '请输入手机号', trigger: 'blur'}],
-        verifyCodeRule: [{type: "number",required: true, message: '验证码为六位数字', trigger: 'blur'}],
-        passwordRule: [{required: true, message: '请输入密码', trigger: 'blur'}],
-        checkedPasswordRule: [{required: true, message: '请输入密码', trigger: 'blur'}]
+        username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
+        phoneNumber: [{type: "number",required: true, message: '请输入手机号', trigger: 'blur'}],
+        verifyCode: [{type: "number",required: true, message: '验证码为六位数字', trigger: 'blur'}],
+        password: [{required: true, message: '请输入密码', trigger: 'blur'}],
+        checkedPassword: [{required: true, message: '请输入密码', trigger: 'blur'}]
       }
     }
   },

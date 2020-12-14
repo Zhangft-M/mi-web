@@ -16,6 +16,22 @@ export function registe(data) {
   })
 }
 
+export function updateUserInfo(data) {
+  return request({
+    url: '/miUser/user/update',
+    method: 'put',
+    data
+  })
+}
+
+export function changePassword(data){
+  return request({
+    url: '/miUser/user/changerPassword',
+    method: 'put',
+    data
+  })
+}
+
 export function phoneNumberLogin(data) {
   return request({
     url: '/miAuth//verifyCode/login',

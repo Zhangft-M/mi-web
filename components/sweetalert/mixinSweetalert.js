@@ -2,10 +2,10 @@ import Swal from 'sweetalert2'
 
 export const mixinToast = Swal.mixin({
   toast: true,
-  position: 'center-start',
   showConfirmButton: false,
   timer: 3000,
-  timerProgressBar: true,
+  position: 'center',
+  timerProgressBar: false,
   didOpen: (toast) => {
     toast.addEventListener('mouseenter', Swal.stopTimer)
     toast.addEventListener('mouseleave', Swal.resumeTimer)
@@ -18,6 +18,7 @@ export const mixinAlert = Swal.mixin({
   showConfirmButton: false,
   timer: 3000,
   timerProgressBar: true,
+  customClass: 'sweetAlert',
   didOpen: (toast) => {
     toast.addEventListener('mouseenter', Swal.stopTimer)
     toast.addEventListener('mouseleave', Swal.resumeTimer)

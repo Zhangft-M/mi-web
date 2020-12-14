@@ -6,3 +6,8 @@
 .page-leave-active {
   opacity: 0.5;
 }
+
+.sweetAlert{
+  position: absolute;
+  padding-left: 200px;
+}

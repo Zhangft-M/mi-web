@@ -1,23 +1,15 @@
 <template>
-<div>
-<el-row :gutter="8">
-  <el-col :span="8" v-for="i in 20" :key="i" style="padding: 8px">
-    <el-card>
-      sssss
-    </el-card>
-  </el-col>
-</el-row>
-</div>
+  <div style="margin: 20px">
+
+  </div>
 </template>
 
 <script>
+import Home from "./home";
 export default {
-  layout: 'userLayout',
-  head() {
-    return {
-      title: '用户中心'
-    }
-  }
+  name: "index",
+  components: {Home},
+  layout:'userLayout',
 }
 </script>
 

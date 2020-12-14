@@ -66,7 +66,7 @@
       <el-row :gutter="20">
         <el-col :span="22">
           <el-input  v-model="userInfo.phoneNumber" class="user-input" disabled>
-            <i slot="prefix" class="el-input__icon fa fa-phone" style="padding-left: 5px"></i>
+            <i slot="prefix" class="el-input__icon fa fa-mobile" style="padding-left: 5px"></i>
           </el-input>
         </el-col>
         <el-col :span="2">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <particles></particles>
+    <particles v-if="showParticles"></particles>
     <div id="wrapper">
       <el-row>
         <el-col :span="20" :offset="2">
@@ -92,13 +92,19 @@ export default {
       myFavorites: [],
     }
   },
+  props:['showParticles'],
   created() {
-    const userId = this.$route.query.userId
-    getInfo(userId).then((data) => {
-      this.userInfo = data
-    }).catch(() => {
-      this.$message.error('出错啦,获取失败');
-    })
+    let userId = this.$route.query.userId
+    if (userId == null){
+      this.userInfo = this.$store.state.user.userInfo
+      userId = this.userInfo.userId
+    }else {
+      getInfo(userId).then((data) => {
+        this.userInfo = data
+      }).catch(() => {
+        this.$message.error('出错啦,获取用户信息失败');
+      })
+    }
     getByUserId(userId).then((data) => {
       this.myPost = data
     }).catch(() => {

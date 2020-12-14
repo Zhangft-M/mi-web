@@ -9,12 +9,12 @@
       </nav>
       <div style="float:right;padding-left: 50px">
         <el-form class="login-register-form" label-width="80px" :rules="rules" :model="loginData" ref="loginForm">
-          <el-form-item label="用户名" prop="userRule" >
+          <el-form-item label="用户名" prop="username" >
             <el-input type="text" v-model="loginData.username" style="width: 300px">
               <i slot="prefix" class="fa fa-user"></i>
             </el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="passwordRule">
+          <el-form-item label="密码" prop="password">
             <el-input type="password" v-model="loginData.password" style="width: 300px">
               <i slot="prefix" class="fa fa-unlock-alt"></i>
             </el-input>
@@ -73,8 +73,8 @@ export default {
         password: '',
       },
       rules: {
-        userRule: [{required: true, message: '请输入用户名', trigger: 'blur'}],
-        passwordRule: [{required: true, message: '请输入密码', trigger: 'blur'}],
+        username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
+        password: [{required: true, message: '请输入密码', trigger: 'blur'}],
       },
       verifyData: {},
       isDisable: true,

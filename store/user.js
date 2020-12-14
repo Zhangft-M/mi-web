@@ -57,6 +57,17 @@ export const actions = {
     })
   },
 
+  setUserInfo({ commit }, userInfo) {
+    return new Promise((resolve, reject) => {
+      if (userInfo != null){
+        commit('SET_USER_INFO',userInfo)
+        resolve()
+      }else {
+        reject()
+      }
+    })
+  },
+
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
