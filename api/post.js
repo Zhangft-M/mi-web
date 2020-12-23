@@ -34,9 +34,18 @@ export function getByUserId(userId) {
   })
 }
 
-export function getUserFavorites(userId) {
+export function getUserCollectPost(userId) {
   return request({
     url: `/miPost/post/favorites/${userId}`,
     method:'get'
   })
 }
+
+export function addPost(data) {
+  return request({
+    url: '/miPost/post/add',
+    method: 'post',
+    data
+  })
+}
+

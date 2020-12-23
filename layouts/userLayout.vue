@@ -1,7 +1,6 @@
 <template>
 <div>
   <el-header style="background-color: #282C35">
-
   </el-header>
   <el-container style="padding-left: 20px;padding-bottom: 20px">
     <user-aside style="padding-top: 20px"></user-aside>

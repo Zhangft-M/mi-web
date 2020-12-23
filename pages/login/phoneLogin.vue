@@ -11,10 +11,10 @@
         <el-form class="login-register-form" :rules="rules" ref="phoneVerifyCodeForm" :model="phoneLoginData">
           <el-form-item label="手机号" prop="phoneNumber" label-width="80px">
             <el-input type="text" v-model.number="phoneLoginData.phoneNumber" style="width: 300px">
-              <i slot="prefix" class="fa fa-mobile"></i>
+              <i slot="prefix" class="el-input__icon fa fa-mobile"></i>
             </el-input>
           </el-form-item>
-          <VerifyCode :phoneNumber="getPhoneNumber" :type="0" :email="null" ref="verifyCode"></VerifyCode>
+            <VerifyCode :type="0" :phoneNumber="phoneLoginData.phoneNumber" ref="verifyCode"></VerifyCode>
           <el-form-item label-width="80px">
             <el-button type="submit" :loading="isLoading" style="width: 300px" class="submit_btn"
                        @click="login" round>Login
@@ -41,7 +41,6 @@ import VerifyCode from "../../components/VerifyCode";
 import Particles from "../../components/Particles";
 import {phoneNumberLogin} from "../../api/user";
 export default {
-  name: "phone",
   components: {VerifyCode,Particles},
   head() {
     return {
@@ -61,33 +60,51 @@ export default {
       },
       isLoading: false,
       rules:{
-        phoneNumber:[{type: "number",required: true, message: '请输入手机号', trigger: 'blur'}],
-        verifyCode: [{type: "number",required: true, message: '验证码为六位数字', trigger: 'blur'}]
+        phoneNumber:[{type: "number",required: true, message: '请输入手机号', trigger: 'blur'}]
       }
     }
   },
   methods:{
     getPhoneNumber(){
-      this.$refs.phoneVerifyCodeForm.validateField("phoneNumber", (isValidate) => {
-        if (isValidate) {
-          return this.phoneLoginData.phoneNumber
-        } else {
-          this.$message.error("请输入正确的手机号")
-          return null;
+      // console.log(this.$refs[val])
+      this.$refs['phoneVerifyCodeForm'].validateField("phoneNumber",errorMessage => {
+        if (!errorMessage){
+          console.log(this.phoneLoginData.phoneNumber)
+          return this.phoneLoginData.phoneNumber;
         }
+        this.$message.error(errorMessage)
+        return null;
       })
     },
     login(){
-      this.phoneLoginData.verifyCode = this.$refs.verifyCode.getVerifyCode
+      this.phoneLoginData.verifyCode = this.$refs.verifyCode.getVerifyCode()
+      const code = this.phoneLoginData.verifyCode + '';
+      if (code === ''){
+        this.$message.error("请输入验证码")
+        return;
+      }else if (code.length !== 6){
+        this.$message.error("验证码为六位数字")
+        return
+      }
       this.$refs.phoneVerifyCodeForm.validate((isValidate)=>{
         if (isValidate){
-          phoneNumberLogin(this.phoneLoginData).then(()=>{
+          this.$store.dispatch('user/verifyCodeLogin',this.phoneLoginData).then(()=>{
+            this.$store.dispatch('user/getInfo').then(()=>{
+              this.$refs.phoneVerifyCodeForm.resetFields()
+              this.$refs.verifyCode.resetVerifyCode()
+              if (window.history.length <= 1) {
+                this.$router.push('/');
+              } else {
+                this.$router.go(-2)
+              }
+            })
+          }).catch(()=>{
             this.$refs.phoneVerifyCodeForm.resetFields()
-            this.$router.push("/")
-          }).catch((error)=>{
-            this.$refs.phoneVerifyCodeForm.resetFields()
-            this.$message.error(error)
+            this.$refs.verifyCode.resetVerifyCode()
+            this.$message.error('登录失败')
           })
+        }else {
+          this.$message.error("请正确填写信息")
         }
       })
     }

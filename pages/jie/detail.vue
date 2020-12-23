@@ -11,29 +11,35 @@
                 <el-tag v-show="postDetails.top" type="info" effect="dark">置顶</el-tag>
                 <el-tag v-show="postDetails.essence" type="warning" effect="dark">精华</el-tag>
                 <span class="fly-list-nums">
+                  <a href="javascript:void(0)" @click="addCollectPost(postDetails)">
+                            <i class="fa"
+                               :class="userCollectionPosts.indexOf(postDetails.id) > -1 ? 'fa-star': 'fa-star-o'"
+                              :style="userCollectionPosts.indexOf(postDetails.id) > -1 ? {color: '#FFB800'} : ''"></i>
+                    </a>
                     <a href="javascript:void(0)" type="zan" @click="thumbUp(postDetails)">
                             <i class="fa"
-                               :class="thumbUpList.indexOf(postDetails.id) > -1 ? 'fa-thumbs-up thumb-up-color': 'fa-thumbs-o-up'"></i>
+                               :class="thumbUpList.indexOf(postDetails.id) > -1 ? ' fa-thumbs-up thumb-up-color': 'fa-thumbs-o-up'"
+                                :style="thumbUpList.indexOf(postDetails.id) > -1 ? {color: '#5FB878'} : ''"></i>
                             <em>{{ postDetails.voteUp }}</em>
                     </a>
-                    <a><i class="iconfont" title="回答">&#xe60c;</i>{{ postDetails.commentCount }}</a>
+                    <a href="javascript:void(0)"><i class="iconfont" title="回答">&#xe60c;</i>{{ postDetails.commentCount }}</a>
                     <i class="iconfont" title="浏览量">&#xe60b;</i> {{ postDetails.viewCount }}
                   </span>
               </div>
               <div class="detail-about">
-                <nuxt-link to="/user/home" class="fly-avatar" target="_blank">
+                <nuxt-link :to="'/user/home?userId=' + postDetails.userId" class="fly-avatar" target="_blank">
                   <el-avatar size="large"
                              :src="postDetails.userAvatar"
-                             :alt="postDetails.username"></el-avatar>
+                             :alt="postDetails.userNickName"></el-avatar>
                 </nuxt-link>
                 <div class="fly-detail-user">
-                  <nuxt-link to="/user/home" target="_blank" class="fly-link">
-                    <cite>{{ postDetails.username }}</cite>
+                  <nuxt-link :to="'/user/home?userId=' + postDetails.userId" target="_blank" class="fly-link">
+                    <cite>{{ postDetails.userNickName }}</cite>
                   </nuxt-link>
                   <span>{{ postDetails.updateTime }}</span>
                 </div>
                 <div class="detail-hits" id="LAY_jieAdmin" data-id="123">
-                  <span style="padding-right: 10px; color: #FF7200">悬赏：{{ postDetails.reward }}积分</span>
+                  <span style="padding-right: 10px; color: #FF7200">悬赏：{{ postDetails.point }}积分</span>
                 </div>
               </div>
               <el-divider><i class="el-icon-mobile-phone"></i></el-divider>
@@ -57,11 +63,11 @@
                       <nuxt-link to="/user/home" class="fly-avatar" target="_blank">
                         <el-avatar size="large"
                                    :src="comment.userAvatar"
-                                   :alt="comment.username"></el-avatar>
+                                   :alt="comment.userNickName"></el-avatar>
                       </nuxt-link>
                       <div class="fly-detail-user">
-                        <a href="" class="fly-link">
-                          <cite>{{ comment.username }}</cite>
+                        <a href="javascript:void(0)" class="fly-link">
+                          <cite>{{ comment.userNickName }}</cite>
                         </a>
                         <span v-show="comment.userId === postDetails.userId">(作者)</span>
                       </div>
@@ -79,7 +85,7 @@
                     </div>
                     <div class="jieda-reply">
                     <span class="jieda-zan zanok" type="zan">
-                        <a href="javascript:void(0)" type="zan" @click="thumbUp(comment)">
+                        <a href="javascript:void(0)" @click="thumbUp(comment)">
                             <i class="fa"
                                :class="thumbUpList.indexOf(comment.id) > -1 ? 'fa-thumbs-up thumb-up-color': 'fa-thumbs-o-up'"></i>
                             <em>{{ comment.voteUp }}</em>
@@ -113,7 +119,7 @@
                           v-show="child.parentId === comment.id">(楼主)</span></el-tag>&nbsp;<span
                         style="color: #FFB800">回复</span>&nbsp;<el-tag effect="plain" type="info" size="mini"><span
                         style="color: #eb7350">{{
-                          child.parentName === null ? '' : child.parentName
+                          child.parentNickName === null ? '' : child.parentNickName
                         }}</span><span v-show="child.parentId === comment.id">(楼主)</span></el-tag>&nbsp;:&nbsp;<el-link
                         @click="showReplyDialog(child,comment)"
                         :underline="false" style="margin-top: 5px"><p
@@ -143,12 +149,13 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="'回复'+ replyData.toUserName" :visible.sync="isShowReplyDialog" @close="isShowReplyDialog = false">
+    <el-dialog :title="'回复'+ replyData.toUserNickName" :visible.sync="isShowReplyDialog"
+               @close="isShowReplyDialog = false">
       <div style="height: 90px">
         <el-input
           type="textarea"
           :autosize="{ minRows: 2, maxRows: 6}"
-          :placeholder="'@'+replyData.toUserName + ':'"
+          :placeholder="'@'+replyData.toUserNickName + ':'"
           v-model="replyData.content">
         </el-input>
         <el-button style="float: right;margin-top: 10px" size="mini" @click="submitReply()">提交</el-button>
@@ -160,14 +167,14 @@
 <script>
 import {getDataById} from "../../api/post";
 import {addComment, getCommentDataByPostId} from "../../api/comment";
-import {thumbUp} from "../../api/thumbUp";
+import {getThumbUpList, thumbUp} from "../../api/thumbUp";
+import {getToken} from "../../utils/auth";
+import {addUserCollections, getUserCollections} from "../../api/userCollections";
 
 const defaultReplyData = {
   content: '',
-  toUserId: '',
-  toUserName: '',
   parentId: '',
-  UserId: null,
+  toUserNickName: '',
   postId: ''
 }
 export default {
@@ -176,8 +183,8 @@ export default {
       text: '',
       isThumbUp: false,
       showReplayList: [],
-      thumbUpList: this.$store.state.thumbUpList.thumbUpIds, // 用户点赞的表
-      favoritesList: this.$store.state.favoritesPost.favoritesPostIds,
+      thumbUpList: [],
+      userCollectionPosts: [],
       isShow: false,
       postDetails: {},
       commentData: [],
@@ -185,27 +192,33 @@ export default {
       chooseData: null, // 当前评论的数据节点
       replyData: {
         content: '',
-        toUserId: '',
-        toUserName: '',
+        toUserNickName: '',
         parentId: '',
         postId: '',
-        userId: null
       }
     }
   },
   created() {
     this.initData()
+    getThumbUpList().then((data)=>{
+      this.thumbUpList = data
+    })
+    getUserCollections().then((data) => {
+      this.userCollectionPosts = data
+    })
   },
   methods: {
-    initData() {
+    async initData() {
       const postId = this.$route.query.postId;
-      getDataById(postId).then((res) => {
+      if (postId === null || postId === '') {
+        await this.$router.push('other/404')
+      }
+      await getDataById(postId).then((res) => {
         this.postDetails = res
         getCommentDataByPostId(postId).then((res) => {
           this.commentData = res
         }).catch(() => {
           // 评论加载失败
-
         })
       }).catch(() => {
         // 数据详情加载失败,路由到404页面
@@ -221,7 +234,7 @@ export default {
       }
     },
     thumbUp(data) {
-      if (this.$store.state.user.token == null || this.$store.state.user.token === '') {
+      if (getToken() == null) {
         // 未登录,跳转到登录页
         this.toLogin()
         return
@@ -230,7 +243,7 @@ export default {
       // console.log(data)
       // this.isThumbUp = !this.isThumbUp
       const thumbUpData = {
-        userId: null,// this.$store.state.user.id,
+        userId: null,
         contentId: data.id
       }
       if (this.thumbUpList.indexOf(data.id) > -1) {
@@ -239,22 +252,48 @@ export default {
         thumbUpData.type = -1
         thumbUp(thumbUpData).then(() => {
           // data.voteUp -= 1
+          // 取消点赞
           data.voteUp -= 1
-          this.$store.dispatch('thumbUpList/removeThumbUpId', data.id)
+          const index = this.thumbUpList.indexOf(data)
+          this.thumbUpList.splice(index, 1)
         })
       } else {
+        // 点赞
         // this.isThumbUp = true
         // this.thumbUpList.push(data.id)
         thumbUpData.type = 1
         thumbUp(thumbUpData).then(() => {
           data.voteUp += 1
-          this.$store.dispatch('thumbUpList/addThumbUpId', data.id);
+          this.thumbUpList.push(data.id);
         })
       }
     },
+    async addCollectPost(post){
+      let type = 1;
+      if (this.userCollectionPosts.indexOf(post.id) > -1) {
+        type = 0
+      }
+      const data = {
+        postId: post.id,
+        type: type
+      }
+      await addUserCollections(data).then(()=>{
+        if (type === 1) {
+          this.userCollectionPosts.push(data.postId)
+          this.$message.success("收藏成功")
+        }else if (type === 0) {
+          this.$message.success("取消收藏成功")
+          const index = this.userCollectionPosts.indexOf(data.id)
+          this.userCollectionPosts.splice(index,1)
+        }
+      }).catch(()=>{
+        this.$message.error(`${type === 0 ? "取消" : ""} 收藏成功`)
+        })
+
+    },
     submit() {
       // const _this = this
-      if (this.$store.state.user.token == null || this.$store.state.user.token === '') {
+      if (getToken() == null) {
         // 未登录,跳转到登录页
         this.toLogin()
         return
@@ -262,7 +301,6 @@ export default {
       const commentData = {
         content: this.text,
         postId: this.postDetails.id,
-        userId: this.$store.state.user.id
       }
       addComment(commentData).then((data) => {
         // 添加成功
@@ -273,24 +311,22 @@ export default {
         this.text = ''
       })
     },
+    // 打开回复框
     showReplyDialog(data, parentData) {
-      if (this.$store.state.user.token == null || this.$store.state.user.token === '') {
+      if (getToken() == null) {
         // 未登录,跳转到登录页
         this.toLogin()
         return
       }
       this.chooseData = parentData == null ? data : parentData
-      /*if (this.$store.state.user.token == null || this.$store.state.user.token === '') {
-        // 未登录,跳转到登录页
-        return
-      }*/
       this.isShowReplyDialog = true
-      this.replyData.toUserName = data.username
+      // todo: 之后需要改为昵称nickName
+      this.replyData.toUserNickName = data.userNickName
       this.replyData.parentId = data.id
       this.replyData.postId = this.postDetails.id
     },
     submitReply() {
-      if (this.$store.state.user.token == null || this.$store.state.user.token === '') {
+      if (getToken() == null) {
         // 未登录,跳转到登录页
         this.toLogin()
         return
@@ -299,7 +335,7 @@ export default {
         const index = this.commentData.indexOf(this.chooseData)
         this.commentData[index].children.push(data)
       }).catch(() => {
-
+        this.$message.error("添加失败")
       }).finally(() => {
         Object.assign(this.replyData, defaultReplyData)
         this.isShowReplyDialog = false
@@ -329,6 +365,9 @@ export default {
 
 .thumb-up-color {
   color: #5FB878;
+}
+.favorite-color {
+  color: #FFB800;
 }
 
 html, body {

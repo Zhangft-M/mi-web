@@ -42,7 +42,7 @@
               <i slot="prefix" class="el-input__icon fa fa-mobile" style="padding-left: 5px"></i>
             </el-input>
           </el-form-item>
-          <VerifyCode :phoneNumber="getContact(0)" :email="null" :type="0" ref="verifyCode"></VerifyCode>
+          <VerifyCode :phoneNumber="form.phoneNumber"  :type="0" ref="verifyCode"></VerifyCode>
         </el-form>
       </div>
       <div v-show="formType === 4">
@@ -53,7 +53,7 @@
               <i slot="prefix" class="el-input__icon fa fa-envelope-o" style="padding-left: 5px"></i>
             </el-input>
           </el-form-item>
-          <VerifyCode :phoneNumber="null" :email="getContact(1)" :type="1" ref="verifyCode"></VerifyCode>
+          <VerifyCode :email="form.email" :type="1" ref="verifyCode"></VerifyCode>
         </el-form>
       </div>
       <div v-show="formType === 5">
@@ -71,7 +71,7 @@
                 <i slot="prefix" class="el-input__icon fa fa-mobile" style="padding-left: 5px"></i>
               </el-input>
             </el-form-item>
-            <VerifyCode style="width: 350px" :phoneNumber="getContact(0)" :email="null" :type="0" ref="verifyCode"></VerifyCode>
+            <VerifyCode style="width: 350px" :phoneNumber="form.phoneNumber" :type="0" ref="verifyCode"></VerifyCode>
           </el-form>
         </div>
         <div v-show="activeIndex === 1" style="margin-top: 10px">
@@ -85,6 +85,27 @@
             </el-form-item>
           </el-form>
         </div>
+      </div>
+      <div v-show="formType === 6">
+        <el-form class="custom-form" :model="form" ref="form30" :rules="rules"
+                 label-width="80px">
+          <el-form-item label="手机号" prop="phoneNumber">
+            <el-input v-model="form.phoneNumber" autocomplete="off">
+              <i slot="prefix" class="el-input__icon fa fa-mobile" style="padding-left: 5px"></i>
+            </el-input>
+          </el-form-item>
+          <VerifyCode :phoneNumber="form.phoneNumber"  :type="0" ref="verifyCode"></VerifyCode>
+        </el-form>
+      </div>
+      <div v-show="formType === 7">
+        <el-select v-model="form.gender" placeholder="请选择">
+          <el-option
+            v-for="item in genderItems"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
       </div>
       <el-row>
         <el-col :offset="8">
@@ -103,11 +124,10 @@
 </template>
 
 <script>
-import {changePassword, updateUserInfo} from "../api/user";
+import {cancelUser, changePassword, updateUserInfo} from "../api/user";
 import VerifyCode from "./VerifyCode";
-import {validateVerifyCode} from "../api/sms";
 import {encrypt} from "../utils/rsaEncrypt";
-import {uploadImage} from "../api/tool";
+import {uploadImage,validateVerifyCode} from "../api/tool";
 
 const defaultForm = {
   username: '',
@@ -130,10 +150,15 @@ export default {
         username: '',
         password: '',
         nickName: '',
+        gender: 0,
         phoneNumber: '',
         email: '',
         verifyCode: ''
       },
+      genderItems:[
+        {label: '男',value: 1},
+        {label: '女',value: 0}
+      ],
       //formType: null,
       activeIndex: 0,
       //dialogVisible:false,
@@ -167,8 +192,8 @@ export default {
     submit() {
       const _self = this
       const formRef = 'form' + this.formType + this.activeIndex
-      if (this.formType === 4 || this.formType === 5) {
-        this.$refs.$refs.verifyCode.getVerifyCode()
+      if (this.formType === 4 || this.formType === 5 || this.formType === 6) {
+        this.form.verifyCode = this.$refs.verifyCode.getVerifyCode()
       }
       this.$refs[formRef].validate((isValidate) => {
         if (isValidate) {
@@ -181,20 +206,27 @@ export default {
             return
           }
           this.isLoading = true
-          updateUserInfo(this.form).then((data) => {
-            this.$store.dispatch('user/setUserInfo', data)
-            this.cancelChange();
-            this.$message.success("更新成功")
-          }).catch(() => {
-            this.cancelChange();
-            this.$message.error("更新失败")
-          })
+          if (this.formType === 6){
+            cancelUser(this.form).then(()=>{
+              this.$store.dispatch('user/resetUserInfo')
+              this.$router.push('/')
+            })
+          }else {
+            updateUserInfo(this.form).then((data) => {
+              this.$store.dispatch('user/setUserInfo', data)
+              this.cancelChange();
+              this.$message.success("更新成功")
+            }).catch(() => {
+              this.cancelChange();
+              this.$message.error("更新失败")
+            })
+          }
         }
       })
     },
     getStyle() {
       switch (this.formType) {
-        case 1 || 2:
+        case 1 || 2 || 7:
           return {height: "200px"}
         case 3 || 4 :
           return {height: "300px"}
@@ -249,8 +281,11 @@ export default {
         this.$message.error("修改失败")
       })
     },
-    uploadImage(file) {
-      const form = new FormData();
+    uploadImage(val) {
+      console.log(val)
+      const file = val.file
+      console.log(file)
+      // const form = new FormData();
       const isJPG = file.type === 'image/jpeg';
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isJPG) {
@@ -261,14 +296,17 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!');
         return
       }
-      form.append("multipartFiles", file);
+      const formData = new FormData()
+      formData.append("avatar",file);
       this.isLoading = true
-      uploadImage(form).then((data) => {
+      uploadImage(formData).then((data) => {
         this.imageUrl = data
         this.$store.state.user.userInfo.avatar = data
         this.isLoading = false
         this.$message.success("上传成功")
-      }).catch(() => {
+      }).catch((error) => {
+        console.log(error)
+        this.isLoading = false
         this.$message.error("上传失败")
       })
     }

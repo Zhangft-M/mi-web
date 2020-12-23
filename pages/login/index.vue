@@ -11,12 +11,12 @@
         <el-form class="login-register-form" label-width="80px" :rules="rules" :model="loginData" ref="loginForm">
           <el-form-item label="用户名" prop="username" >
             <el-input type="text" v-model="loginData.username" style="width: 300px">
-              <i slot="prefix" class="fa fa-user"></i>
+              <i slot="prefix" class="el-input__icon fa fa-user"></i>
             </el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input type="password" v-model="loginData.password" style="width: 300px">
-              <i slot="prefix" class="fa fa-unlock-alt"></i>
+              <i slot="prefix" class="el-input__icon fa fa-unlock-alt"></i>
             </el-input>
           </el-form-item>
           <el-form-item label="验证" style="padding-top: 10px">
@@ -97,7 +97,7 @@ export default {
       this.$refs.loginForm.validate((isValidate)=>{
         if (isValidate){
           // 有验证数据,进行登录的操作
-          const encodeUsername = encrypt(this.loginData.password.trim())
+          const encodeUsername = encrypt(this.loginData.username.trim())
           const encodePassword = encrypt(this.loginData.password.trim())
           const requestData = {
             loginData: {
@@ -109,15 +109,13 @@ export default {
           this.$store.dispatch('user/login', requestData).then(() => {
             this.$store.dispatch('user/getInfo').then(() => {
               this.$refs.loginForm.resetFields()
-              this.$refs['verify'].reset()
-              this.$store.dispatch('thumbUpList/setThumbUpIds')
-              this.$store.dispatch('favoritesPost/getFavoritesPostId')
               this.isLoading = false
               if (window.history.length <= 1) {
                 this.$router.push('/');
               } else {
                 this.$router.go(-1)
               }
+              this.$refs['verify'].reset()
             }).catch(() => {
               this.$refs.loginForm.resetFields()
               this.$refs['verify'].reset()
@@ -133,10 +131,7 @@ export default {
             this.$message.error("系统错误,登录失败")
           })
         } else {
-          mixinToast.fire({
-            icon: 'error',
-            title: '请正确填写用户名哦!'
-          })
+         this.$message.error("请正确填写用户名和密码")
         }
       })
     },
@@ -144,6 +139,7 @@ export default {
       console.log(payload)
       this.verifyData = payload;
       this.isDisable = false
+      this.$message.success("验证成功,两分钟内有效")
     },
     changePassword(val) {
       console.log(val)

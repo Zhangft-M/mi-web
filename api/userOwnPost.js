@@ -1,8 +1,9 @@
 import request from "../utils/request";
 
-export function getFavoritesPostId(){
+export function getUserOwnPost(){
   return request({
-    url: '/miPost/favorites/post',
+    url: '/user/own/post',
     method: 'get'
   })
 }
+

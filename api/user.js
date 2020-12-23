@@ -2,7 +2,7 @@ import request from '../utils/request'
 
 export function login(data) {
   return request({
-    url: '/miAuth/oauth/login',
+    url: '/miAuth/oauth/token',
     method: 'post',
     data
   })
@@ -42,8 +42,11 @@ export function phoneNumberLogin(data) {
 
 export function getInfo(userId) {
   return request({
-    url: `/miUser/user/info/${userId}`,
+    url: `/miUser/user/info/`,
     method: 'get',
+    params:{
+      userId: userId == null ? null : userId
+    }
   })
 }
 
@@ -51,5 +54,13 @@ export function logout() {
   return request({
     url: '/miAuth/oauth/logout',
     method: 'post'
+  })
+}
+
+export function cancelUser(data) {
+  return request({
+    url: '/miUser/user/cancel',
+    method: 'post',
+    data
   })
 }

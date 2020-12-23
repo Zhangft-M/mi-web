@@ -3,7 +3,7 @@
   <el-row class="user-row">
     <el-col :offset="10" :span="10">
       <a href="javascript:void(0)" @click="openDialog(0)" alt="点击更换头像">
-        <el-avatar src="https://usms-news-pic.oss-cn-beijing.aliyuncs.com/images/2020/05/27/15905787747671265605228987219970.jpg" alt="点击修改头像" :size="100" @click="openDialog(0)"></el-avatar>
+        <el-avatar :src="userInfo.avatar" alt="点击修改头像" :size="100" @click="openDialog(0)"></el-avatar>
       </a>
     </el-col>
   </el-row>
@@ -14,7 +14,7 @@
     <el-col :offset="0" :span="9">
       <el-row :gutter="20">
         <el-col :span="22">
-          <el-input disabled  v-model="userInfo.userName" class="user-input">
+          <el-input disabled  v-model="userInfo.username" class="user-input">
             <i slot="prefix" class="el-input__icon fa fa-user-o" style="padding-left: 5px"></i>
           </el-input>
         </el-col>
@@ -43,18 +43,25 @@
   </el-row>
 
   <el-row class="user-row">
-    <el-col :offset="6" :span="0.5" style="margin-top: 7px">
+    <el-col :offset="6" :span="1" style="margin-top: 7px">
       <p class="label-font">性别:</p>
     </el-col>
-    <el-col :offset="1" :span="10">
-      <div>
-        <el-radio v-model="userInfo.gender" label="1" border>
-          <i class="fa fa-mars"></i>
-        </el-radio>
-        <el-radio v-model="userInfo.gender" label="2" border>
-          <i class="fa fa-venus"></i>
-        </el-radio>
-      </div>
+    <el-col :offset="0.5" :span="9">
+      <el-row :gutter="20">
+        <el-col :span="22">
+          <el-radio-group v-model="userInfo.gender" disabled>
+            <el-radio :label= "1"  border>
+              <i class="fa fa-mars"></i>
+            </el-radio>
+            <el-radio :label="0" border>
+              <i class="fa fa-venus"></i>
+            </el-radio>
+          </el-radio-group>
+        </el-col>
+        <el-col :span="1">
+          <a href="javascript:void(0)" class="hvr-icon-bob"><i class="el-input__icon fa fa-pencil-square hvr-icon" @click="openDialog(7)"></i></a>
+        </el-col>
+      </el-row>
     </el-col>
   </el-row>
 
@@ -65,7 +72,7 @@
     <el-col :offset="0" :span="9">
       <el-row :gutter="20">
         <el-col :span="22">
-          <el-input  v-model="userInfo.phoneNumber" class="user-input" disabled>
+          <el-input  v-model="userInfo.phone" class="user-input" disabled>
             <i slot="prefix" class="el-input__icon fa fa-mobile" style="padding-left: 5px"></i>
           </el-input>
         </el-col>
@@ -109,6 +116,8 @@
 
 <script>
 import DialogForm from "../../components/DialogForm";
+import {getToken} from "../../utils/auth";
+import {getUserInfo} from "../../utils/sessionUtils";
 export default {
   components: {DialogForm},
   layout:'userLayout',
@@ -119,11 +128,19 @@ export default {
   },
   data(){
     return{
-      userInfo : this.$store.state.user.userInfo,
+      userInfo : {},
       val:'',
       dialogVisible: false,
       formType : -1
     }
+  },
+  mounted() {
+    if (getToken() == null) {
+      this.$router.push('/other/404')
+    }
+    getUserInfo().then((data) => {
+      this.userInfo = data
+    })
   },
   methods:{
     openDialog(formType){
@@ -149,7 +166,7 @@ export default {
 .user-input input.el-input__inner{
   border-radius: 10px;
   margin-left: 10px;
-  opacity: 0.85;
+  opacity: 1;
   background-color: #282C35;
   font-family: "Arial Black";
 }

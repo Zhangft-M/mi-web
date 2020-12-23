@@ -1,8 +1,8 @@
 <template>
-  <div class="fly-header layui-bg-black">
+  <div class="fly-header" style="z-index: 1000">
     <div class="layui-container">
       <nuxt-link class="fly-logo" to="/">
-        <el-image src="../static/images/logo.png"></el-image>
+        <el-image src=""></el-image>
       </nuxt-link>
       <ul class="layui-nav fly-nav layui-hide-xs">
         <li class="layui-nav-item">
@@ -11,10 +11,10 @@
         <li class="layui-nav-item">
           <nuxt-link to="/case/case" target="_blank"><i class="iconfont icon-iconmingxinganli"></i>案例</nuxt-link>
         </li>
-        <li class="layui-nav-item" v-show="isSearch">
+        <li class="layui-nav-item" v-show="isSearch" style="padding-left: 50px">
           <div class="layui-hide-xs" style="position: center">
-            <el-input placeholder="请输入内容" class="el-input--medium" v-model="keyword" style="border-radius: 20px">
-              <el-button slot="append" icon="el-icon-search" circle @click="search"></el-button>
+            <el-input placeholder="请输入内容" class="el-input--medium search-input" v-model="keyword" style="border-radius: 20px">
+              <el-button style="opacity: 0.85" slot="suffix" icon="el-icon-search" size="mini" circle @click="search"></el-button>
             </el-input>
           </div>
         </li>
@@ -40,17 +40,20 @@
         <li v-show="isLogin" style="padding-top: 9px;padding-right: 20px">
           <el-dropdown >
             <span class="el-dropdown-link">
-              <el-avatar class="fly-nav-avatar" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+              <el-avatar :src="avatar" :size="50"></el-avatar>
              </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
-                <nuxt-link :to="'/user/set?userId=' + userId"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</nuxt-link>
+                <nuxt-link to="/jie/add"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>发帖</nuxt-link>
               </el-dropdown-item>
               <el-dropdown-item>
-                <nuxt-link :to="'/user/set?userId=' + userId"><i class="layui-icon">&#xe620;</i>基本设置</nuxt-link>
+                <nuxt-link to="/user/home"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</nuxt-link>
               </el-dropdown-item>
               <el-dropdown-item>
-                <nuxt-link :to="'/user/set?userId=' + userId"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</nuxt-link>
+                <nuxt-link to="/user/set"><i class="layui-icon">&#xe620;</i>基本设置</nuxt-link>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <nuxt-link to="/user/message"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</nuxt-link>
               </el-dropdown-item>
               <el-dropdown-item>
                 <a href="javascript:void(0)" @click="logout" style="text-align: center;">退出</a>
@@ -78,19 +81,30 @@
 </template>
 
 <script>
+import {getToken} from "../../utils/auth";
+import {getUserInfo} from "../../utils/sessionUtils";
+import {getInfo} from "../../api/user";
+
 export default {
   name: "Header",
   data() {
     return {
       keyword: null,
-      isLogin: true,
-      userId: this.$store.state.user.userInfo.userId,
-      nickName: this.$store.state.user.userInfo.nickName
+      isLogin: false,
+      avatar: '',
+      userId: "",
+      nickName: "",
     }
   },
   mounted() {
-    if (this.$store.state.token != null) {
+    if (getToken() != null) {
       this.isLogin = true
+      getUserInfo().then((data) => {
+        this.userId = data.id
+        this.nickName = data.nickName
+        this.avatar = data.avatar
+      })
+      // console.log(userInfo)
     }
   },
   props: ['isSearch'],
@@ -105,6 +119,9 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+.search-input input.el-input__inner {
+  border-radius: 15px;
+  opacity: 0.85;
+}
 </style>

@@ -10,93 +10,52 @@
             </ul>
             <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
               <div class="layui-tab-item layui-show">
-                <form action="" method="post">
                   <div class="layui-row layui-col-space15 layui-form-item">
                     <div class="layui-col-md3">
                       <label class="layui-form-label">所在专栏</label>
                       <div class="layui-input-block" style="padding-left: 5px">
-                          <el-select v-model="value" placeholder="请选择">
+                          <el-select v-model="postData.categoryId" placeholder="请选择">
                             <el-option
-                              v-for="item in options"
-                              :key="item.value"
-                              :label="item.label"
-                              :value="item.value">
+                              v-for="item in categoryOptions"
+                              :key="item.id"
+                              :label="item.name"
+                              :value="item.id">
                             </el-option>
                           </el-select>
                       </div>
                     </div>
                     <div class="layui-col-md9">
-                      <label for="L_title" class="layui-form-label">标题</label>
-                      <div class="layui-input-block">
-                        <input type="text" id="L_title" name="title" required lay-verify="required" autocomplete="off"
-                               class="layui-input">
-                        <!-- <input type="hidden" name="id" value="{{d.edit.id}}"> -->
-                      </div>
-                    </div>
-                  </div>
-                  <div class="layui-row layui-col-space15 layui-form-item layui-hide" id="LAY_quiz">
-                    <div class="layui-col-md3">
-                      <label class="layui-form-label">所属产品</label>
-                      <div class="layui-input-block">
-                        <!--<select name="project">
-                          <option></option>
-                          <option value="layui">layui</option>
-                          <option value="独立版layer">独立版layer</option>
-                          <option value="独立版layDate">独立版layDate</option>
-                          <option value="LayIM">LayIM</option>
-                          <option value="Fly社区模板">Fly社区模板</option>
-                        </select>-->
-                      </div>
-                    </div>
-                    <div class="layui-col-md3">
-                      <label class="layui-form-label" for="L_version">版本号</label>
-                      <div class="layui-input-block">
-                        <input type="text" id="L_version" value="" name="version" autocomplete="off"
-                               class="layui-input">
-                      </div>
-                    </div>
-                    <div class="layui-col-md6">
-                      <label class="layui-form-label" for="L_browser">浏览器</label>
-                      <div class="layui-input-block">
-                        <input type="text" id="L_browser" value="" name="browser" placeholder="浏览器名称及版本，如：IE 11"
-                               autocomplete="off" class="layui-input">
-                      </div>
+                      <el-input placeholder="请输入内容" v-model="postData.title">
+                        <template slot="prepend">标题</template>
+                      </el-input>
                     </div>
                   </div>
                   <div class="layui-form-item layui-form-text">
                     <div class="layui-input-block">
-                      <TinyEditor></TinyEditor>
+                      <TinyEditor ref="editor"></TinyEditor>
                     </div>
                   </div>
-                  <div class="layui-form-item">
-                    <div class="layui-inline">
-                      <label class="layui-form-label">悬赏飞吻</label>
-                      <div class="layui-input-inline" style="width: 190px;">
-                        <!--<select name="experience">
-                          <option value="20">20</option>
-                          <option value="30">30</option>
-                          <option value="50">50</option>
-                          <option value="60">60</option>
-                          <option value="80">80</option>
-                        </select>-->
-                      </div>
-                      <div class="layui-form-mid layui-word-aux">发表后无法更改飞吻</div>
-                    </div>
+                  <div v-show="postData.categoryId === '1'">
+                      <label class="layui-form-label">悬赏积分</label>
+                      <el-input-number style="padding-left: 10px" v-model="postData.point" @change="handleChange" :min="0" :max="100" label="描述文字"></el-input-number>
                   </div>
-                  <div class="layui-form-item">
-                    <label for="L_vercode" class="layui-form-label">人类验证</label>
-                    <div class="layui-input-inline">
-                      <input type="text" id="L_vercode" name="vercode" required lay-verify="required"
-                             placeholder="请回答后面的问题" autocomplete="off" class="layui-input">
-                    </div>
-                    <div class="layui-form-mid">
-                      <span style="color: #c00;">1+1=?</span>
-                    </div>
+                  <div v-show="postData.categoryId === '2'">
+                    <label class="layui-form-label">阅读积分</label>
+                    <el-input-number style="padding-left: 10px" v-model="postData.point" @change="handleChange" :min="0" :max="100" label="描述文字"></el-input-number>
                   </div>
-                  <div class="layui-form-item">
-                    <button class="layui-btn" lay-filter="*" lay-submit>立即发布</button>
+                  <div style="padding-top: 10px">
+                    <label class="layui-form-label" style="text-overflow: inherit">接收回复邮件:</label>
+                    <el-radio-group style="padding-left: 10px" v-model="postData.receiveReply">
+                      <el-radio :label="1" border>是</el-radio>
+                      <el-radio :label="0" border>否</el-radio>
+                    </el-radio-group>
                   </div>
-                </form>
+                  <div style="padding-top: 10px">
+                    <Verify @getVerifyData="getVerifyData" ref="verify"></Verify>
+                  </div>
+                  <div class="layui-form-item" style="float: right">
+                    <el-button :disabled="isDisable" class="layui-btn" lay-filter="*" lay-submit @click="submit">立即发布</el-button>
+                  </div>
               </div>
             </div>
           </div>
@@ -108,12 +67,65 @@
 
 <script>
 import TinyEditor from "../../components/editor/TinyEditor";
+import Verify from "../../components/Verify";
+import {getCategory} from "../../utils/sessionUtils";
+import {addPost} from "../../api/post";
 export default {
-  components: {TinyEditor},
+  components: {TinyEditor,Verify},
+  mixins: ['Verify'],
   data(){
     return{
-      options: [],
-      value: ''
+      isDisable: true,
+      categoryOptions: [],
+      value: '',
+      verifyData: '',
+      postData: {
+        title: '',
+        content: '',
+        point: 0,
+        categoryId: '',
+        receiveReply: 1
+      }
+    }
+  },
+  mounted() {
+    getCategory().then((data) => {
+      this.categoryOptions = data
+      this.categoryOptions.shift()
+    })
+  },
+  methods:{
+    getVerifyData(payload) {
+      console.log(payload)
+      this.verifyData = payload;
+      this.isDisable = false
+      this.$message.success("验证成功")
+    },
+    handleChange(){},
+    submit(){
+      if (this.postData.categoryId === ''){
+        this.$message.error("请选择类别")
+        return;
+      }
+      if (this.postData.title === '') {
+        this.$message.error("请输入标题")
+        return;
+      }
+      this.postData.content = this.$refs.editor.getContent()
+      console.log(this.postData.content)
+      if (this.postData.content === '') {
+        this.$message.error("请输入正文内容")
+        return
+      }
+      const data = {
+        verifyData: this.verifyData,
+        postData: this.postData
+      }
+      addPost(data).then(()=>{
+        this.$message.success("添加成功")
+      }).catch(()=>{
+        this.$message.error("添加失败")
+      })
     }
   }
 }

@@ -1,8 +1,8 @@
 <template>
-  <div style="padding-top: 10px;padding-bottom: 30px">
+  <div style="padding-bottom: 30px">
     <div class="fly-panel fly-column">
-      <div class="layui-container">
-        <el-card style="height: 80px">
+      <div class="" style="">
+        <el-card style="height: 80px;border-radius: 10px;opacity: 0.8">
           <ul class="layui-clear">
             <!--          layui-this为已选中状态-->
             <!--<nuxt-link to="/?categoryId=0" active-class='layui-this' tag="li" exact>
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import {getCategories} from "@/api/category";
+import {getCategory} from "../../utils/sessionUtils";
 
 const homePath = '/';
 const otherPath = '/jie?categoryId=';
@@ -40,13 +40,12 @@ export default {
   name: "Column",
   data() {
     return {
-      categoryList: this.$store.state.category.categoryList
+      categoryList: []
     }
   },
-  created() {
-    this.$store.dispatch('category/setCategorise').then((result)=>{
-      this.categoryList = result
-      // console.log(result)
+  mounted() {
+    getCategory().then((data) => {
+      this.categoryList = data
     })
   },
   filters: {
@@ -55,6 +54,11 @@ export default {
         return homePath
       }
       return otherPath + val.id
+    }
+  },
+  methods:{
+    getCategory(){
+      return this.categoryList;
     }
   }
 }

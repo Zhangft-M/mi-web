@@ -1,9 +1,10 @@
 <template>
   <div>
     <Header @getKeyword="getKeyword" :is-search="true"></Header>
-    <div style="background: #23262E">
+    <Particles></Particles>
+    <div id="wrapper">
       <div class="layui-container">
-        <Column></Column>
+        <Column ref="column"></Column>
         <div>
           <el-card class="box-card">
             <div slot="header" class="clearfix">
@@ -33,42 +34,41 @@
                       <!--<span class="layui-badge layui-bg-red">精帖</span>-->
                     </div>
                     <div class="layui-col-md2">
-                      <nuxt-link to="/user/home" class="fly-avatar" target="_blank">
+                      <nuxt-link :to="'/user/home?userId=' + postItem.userId" class="fly-avatar" target="_blank">
                         <el-avatar size="large"
-                                   src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
-                                   alt="贤心"></el-avatar>
+                                   :src="postItem.userAvatar"
+                                   :alt="postItem.userNickName"></el-avatar>
                       </nuxt-link>
                     </div>
                     <div class="layui-col-md10 layui-col-md-offset2">
                       <div class="layui-row">
                         <div class="layui-col-md12">
                           <h2>
-                            <a class="layui-badge">分享</a>
-                            <nuxt-link :to="'/jie/detail?postId='+postItem.id" target="_blank">
+                            <el-link type="text" @click="toDetail(postItem)">
                         <span class="title-font text-title">
                           {{ postItem.title| hideTitle() }}
                         </span>
-                            </nuxt-link>
+                            </el-link>
                             <!--                  <a href="jie/detail.vue"></a>-->
                           </h2>
                         </div>
                         <div class="layui-col-md12" style="padding-top: 10px">
                           <p class="text-content">
                             {{
-                              postItem.content | hideText()
+                              postItem.content
                             }}
                           </p>
                         </div>
                         <div class="layui-col-md12" style="padding-top: 10px">
                           <div class="fly-list-info">
-                            <nuxt-link to="/user/home" target="_blank">
-                              <i class="fa fa-user"><cite>&nbsp;{{ postItem.username }}</cite></i>
+                            <nuxt-link :to="'/user/home?userId=' + postItem.userId" target="_blank">
+                              <i class="fa fa-user"><cite>&nbsp;{{ postItem.userNickName }}</cite></i>
                               <!--<i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
                               <i class="layui-badge fly-badge-vip">VIP3</i>-->
                             </nuxt-link>
                             <span>{{ postItem.updateTime | parseDate() }}</span>
                             <span class="fly-list-kiss layui-hide-xs" title="悬赏积分"><i
-                              class="fa fa-diamond"></i>{{ postItem.reward }}</span>
+                              class="fa fa-diamond"></i>{{ postItem.point }}</span>
                             <span v-show="postItem.ending" class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
                             <span class="fly-list-nums">
                           <i class="fa fa-commenting"></i> {{ postItem.commentCount }}
@@ -112,6 +112,8 @@ import Broadside from "../../components/layout/Broadside";
 import {queryData} from "../../api/post"
 import {formatTime} from "../../utils"
 import Header from "../../components/layout/Header";
+import Particles from "../../components/Particles";
+import postMixin from "../../components/mixin/postMixin";
 
 const defaultQueryParam = {
   page: 0,
@@ -122,8 +124,17 @@ const defaultQueryParam = {
   sort: ['_id,desc']
 }
 export default {
-  components: {Header, Column, Broadside},
+  components: {Particles, Header, Column, Broadside},
   // components: {Column}
+  mixins:[postMixin],
+  head() {
+    return {
+      title: '社区',
+      link: [
+        {rel: 'stylesheet', href: '/css/custom.css'},
+      ]
+    }
+  },
   data() {
     return {
       keyword: '',
@@ -172,7 +183,7 @@ export default {
       return result
     },
 
-    hideText: function (val) {
+    /*hideText: function (val) {
       const length = val.length
       let result = val
       if (length > 10) {
@@ -181,7 +192,7 @@ export default {
         result = val.substr(0, 10 + hasLength).concat('...')
       }
       return result
-    },
+    },*/
 
     parseDate: function (val) {
       let date = new Date(Date.parse(val.replace(/-/g, "/")));
@@ -263,7 +274,7 @@ export default {
       }
     },
     getKeyword(val) {
-      Object.assign(this.queryParam,defaultQueryParam)
+      Object.assign(this.queryParam, defaultQueryParam)
       this.filterTypeValue = 0
       this.sortTypeValue = -1
       this.queryParam.keyword = val
@@ -273,7 +284,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .card-margin {
   width: 500px;
   margin-right: 40px;
@@ -286,6 +297,10 @@ export default {
   font-family: 华文行楷, serif;
   color: rgba(2, 4, 10, 0.59);
   text-indent: 2em;
+}
+
+html body {
+  margin-top: 61px;
 }
 
 .el-pager li {

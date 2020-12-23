@@ -1,4 +1,5 @@
-import {getCategories} from "@/api/category";
+import {getCategories} from "../api/category";
+import {setCategory} from "../utils/sessionUtils";
 
 export const state = () => {
   return {
@@ -9,6 +10,7 @@ export const state = () => {
 export const mutations = {
   SET_CATEGORY_LIST(state, data) {
     state.categoryList = data
+    setCategory(data)
   }
 }
 

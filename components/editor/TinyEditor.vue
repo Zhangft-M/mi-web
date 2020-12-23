@@ -1,15 +1,16 @@
 <template>
   <div id="TinyEditor">
-    <editor
+    <editor style="border-radius: 10px"
       api-key="1cpsqexim82fkf71tga923wcvbouxo95aj8a16u24m31knbv"
       :init="init"
+      v-model="content"
     />
   </div>
 </template>
 
 <script>
 import Editor from '@tinymce/tinymce-vue'
-
+import {uploadBase64Image} from "../../api/tool";
 export default {
   name: "TinyEditor",
   data() {
@@ -30,16 +31,30 @@ export default {
         image_uploadtab: true,
         file_picker_types: 'image',
         images_upload_handler(blobInfo, success,failure){
-          console.log(blobInfo.base64())
+          const formData = new FormData()
+          formData.append("postImage",blobInfo.blob())
+          uploadBase64Image(formData).then((data)=>{
+            if (data != null){
+              success(data)
+            }else {
+              failure("图片上传失败")
+            }
+          })
+
         }
-      }
+      },
+      content: ''
     }
   },
   components: {
     'editor': Editor
   },
   mounted() {
-
+  },
+  methods:{
+    getContent(){
+      return this.content
+    }
   }
 }
 </script>

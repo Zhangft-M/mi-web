@@ -1,8 +1,6 @@
 import axios from 'axios'
-import {MessageBox, Message, Notification} from 'element-ui'
-import store from '@/store'
+import {Notification} from 'element-ui'
 import Cookies from 'js-cookie'
-import getters from '../store/getters'
 import {getToken} from "./auth";
 
 // create an axios instance
@@ -36,9 +34,11 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const code = response.status
+    // console.log(code)
+    // console.log(response)
     if (code < 200 || code > 300) {
       Notification.error({
-        title: response.message,
+        title: response.data,
         position: "bottom-right"
       })
       return Promise.reject('error')
@@ -48,9 +48,12 @@ service.interceptors.response.use(
     }
   },
   error => {
+    //console.log(error.response)
+    // console.log(error.response.status)
     let code = 0
     try {
-      code = error.response.data.status
+      code = error.response.status
+      console.log(code)
     } catch (e) {
       if (error.toString().indexOf('Error: timeout') !== -1) {
         Notification.error({
@@ -61,17 +64,13 @@ service.interceptors.response.use(
         return Promise.reject(error)
       }
     }
-    if (code) {
+    if (code !== 0) {
       if (code === 401) {
-        store.dispatch('LogOut').then(() => {
-          // 用户登录界面提示
-          Cookies.set('point', 401)
-          location.reload()
-        })
+          console.log("未认证")
       } else if (code === 403) {
         this.$router.push({ path: '/401' })
       } else {
-        const errorMsg = error.response.data.message
+        const errorMsg = error.response.data
         if (errorMsg !== undefined) {
           Notification.error({
             title: errorMsg,
@@ -82,7 +81,7 @@ service.interceptors.response.use(
       }
     } else {
       Notification.error({
-        title: '接口请求失败',
+        title: error.response.data,
         duration: 5000,
         position: "bottom-right"
       })

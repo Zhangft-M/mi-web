@@ -5,14 +5,14 @@
 body{
   font-size: 15px;
   line-height: 1.7;
-  text-align: center;
+  /*text-align: center;*/
   font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
 }
 html,body{
   height: 100%;
 }
 body,ul,ol,li,h1,h2,h3,h4,h5,p{
-  margin:0;
+
   padding: 0;
 }
 a{
