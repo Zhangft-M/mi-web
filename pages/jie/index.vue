@@ -27,7 +27,7 @@
               <div class="layui-col-md6 content-card hvr-grow-shadow card-margin" v-for="postItem in postDatas"
                    :key="postItem.id">
                 <el-card class="box-card animate__animated animate__lightSpeedInLeft hvr-curl-top-right"
-                         shadow="hover">
+                         shadow="hover" style="width: 500px">
                   <div class="layui-row">
                     <div class="fly-list-badge" v-show="postItem.top">
                       <span class="layui-badge layui-bg-black">置顶</span>
@@ -52,12 +52,7 @@
                             <!--                  <a href="jie/detail.vue"></a>-->
                           </h2>
                         </div>
-                        <div class="layui-col-md12" style="padding-top: 10px">
-                          <p class="text-content">
-                            {{
-                              postItem.content
-                            }}
-                          </p>
+                        <div class="layui-col-md12 text-content" style="padding-top: 10px" v-html="postItem.content">
                         </div>
                         <div class="layui-col-md12" style="padding-top: 10px">
                           <div class="fly-list-info">

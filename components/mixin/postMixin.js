@@ -24,7 +24,9 @@ export default {
       const categoryId = post.categoryId
       if (categoryId === '2' && post.point > 0){
         await getUserOwnPost(post.id).then((data)=>{
-          if (data == null) {
+          console.log("查询是否有权限阅读")
+          console.log(data)
+          if (!data) {
             this.$confirm(`浏览该文章需要花费${post.point}积分,是否继续`,'提示',{
               confirmButtonText: '确定',
               cancelButtonText: '取消'

@@ -44,7 +44,7 @@
              </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
-                <nuxt-link to="/jie/add"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>发帖</nuxt-link>
+                <nuxt-link to="/jie/add" target="_blank"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>发帖</nuxt-link>
               </el-dropdown-item>
               <el-dropdown-item>
                 <nuxt-link to="/user/home"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</nuxt-link>

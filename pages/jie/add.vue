@@ -54,7 +54,7 @@
                     <Verify @getVerifyData="getVerifyData" ref="verify"></Verify>
                   </div>
                   <div class="layui-form-item" style="float: right">
-                    <el-button :disabled="isDisable" class="layui-btn" lay-filter="*" lay-submit @click="submit">立即发布</el-button>
+                    <el-button :loading="isLoading" :disabled="isDisable" class="layui-btn" lay-filter="*" lay-submit @click="submit">立即发布</el-button>
                   </div>
               </div>
             </div>
@@ -79,6 +79,7 @@ export default {
       categoryOptions: [],
       value: '',
       verifyData: '',
+      isLoading:false,
       postData: {
         title: '',
         content: '',
@@ -121,10 +122,13 @@ export default {
         verifyData: this.verifyData,
         postData: this.postData
       }
+      this.isLoading = true
       addPost(data).then(()=>{
         this.$message.success("添加成功")
+        this.isLoading = false
       }).catch(()=>{
         this.$message.error("添加失败")
+        this.isLoading = false
       })
     }
   }

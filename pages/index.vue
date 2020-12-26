@@ -27,12 +27,12 @@
                                      :alt="postData.userNickName"></el-avatar>
                         </nuxt-link>
                         <h2 style="padding-bottom: 15px">
-                          <el-button class="layui-badge">动态</el-button>
-                          <el-button type="text" @click="toDetail(postData)">
+                          <el-link class="layui-badge">动态</el-link>
+                          <el-link type="text" @click="toDetail(postData)">
                         <span class="title-font">
                           {{ postData.title }}
                         </span>
-                          </el-button>
+                          </el-link>
                           <!--                  <a href="jie/detail.vue"></a>-->
                         </h2>
                         <div class="fly-list-info">
@@ -95,6 +95,9 @@ export default {
       postItems: []
     }
   },
+  asyncData(context) {
+    console.log(context.store)
+  },
   mounted() {
 
     // console.log(this.category)
@@ -130,7 +133,7 @@ export default {
     getCategoryName(val){
       if (this.category == null) {
         getCategory().then((data)=>{
-          this.category = data
+           this.category = data
         })
       }
       for (let i = 0; i < this.category.length; i++) {

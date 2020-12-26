@@ -23,7 +23,7 @@
             <Verify @getVerifyData="getVerifyData" ref="verify"></Verify>
           </el-form-item>
           <el-form-item>
-            <el-button type="submit" :disabled="isDisable" :loading="isLoading" style="width: 300px" class="submit_btn"
+            <el-button type="submit" :disabled="isDisable" :loading="isLoading" style="width: 300px !important;height: 40px !important;" class="submit_btn"
                        @click="login" round>Login
             </el-button>
           </el-form-item>
