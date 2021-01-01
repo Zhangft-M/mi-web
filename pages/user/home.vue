@@ -4,7 +4,7 @@
     <div id="wrapper">
       <el-row>
         <el-col :span="20" :offset="2">
-          <el-card class="fly-home fly-panel myHome" :style="{backgroundImage: 'url(' + userInfo.avatar + ')'}">
+          <el-card class="fly-home fly-panel myHome animate__animated animate__backInDown" :style="{backgroundImage: 'url(' + userInfo.avatar + ')'}">
             <el-avatar shape="circle" :size="100" fit="cover" :src="userInfo.avatar"></el-avatar>
             <el-row>
               <el-col :span="24">
@@ -51,7 +51,7 @@
 
       <el-row style="padding-top: 20px">
         <el-col :span="9" :offset="2">
-          <el-card>
+          <el-card class="animate__animated animate__backInLeft">
             <div class="fly-panel">
               <h3 class="fly-panel-title">{{ userInfo.nickName }} 最近发的帖子</h3>
               <ul class="jie-row">
@@ -67,7 +67,7 @@
           </el-card>
         </el-col>
         <el-col :span="9" :offset="2">
-          <el-card>
+          <el-card class="animate__animated animate__backInRight">
             <div class="fly-panel">
               <h3 class="fly-panel-title">{{ userInfo.nickName }} 最近的收藏</h3>
               <ul class="home-jieda">
@@ -89,14 +89,16 @@
 
 <script>
 import Particles from "../../components/Particles";
-import {getInfo} from "../../api/user";
+import {getInfo, getInfoWithNoId} from "../../api/user";
 import {getByUserId, getUserCollectPost} from "../../api/post";
 import {formatTime} from "../../utils";
-import {getUserInfo} from "../../utils/sessionUtils";
 import {getToken} from "../../utils/auth";
+import {mixinToast} from "../../components/sweetalert/mixinSweetalert";
+import userInfoMixin from "../../components/mixin/userInfoMixin";
 
 export default {
   components: {Particles},
+  mixins:[userInfoMixin],
   head() {
     return {
       title: '用户主页',
@@ -107,40 +109,53 @@ export default {
   },
   data() {
     return {
-      userInfo: {},
+      // userInfo: {},
       myPost: [],
       myCollections: [],
     }
   },
-  created() {
+  mounted() {
     let userId = this.$route.query.userId
+    console.log(userId == null)
     if (userId == null && getToken() != null) {
-      getUserInfo().then((data)=>{
+      getInfoWithNoId().then((data)=>{
         this.userInfo = data
       })
-      userId = this.userInfo.id
     } else if (userId != null) {
       getInfo(userId).then((data) => {
         this.userInfo = data
       }).catch(() => {
-        this.$message.error('出错啦,获取用户信息失败');
+        mixinToast.fire({
+          titleText: '出错啦,获取用户信息失败',
+          icon:'error'
+        })
       })
     } else {
-      this.$message.error("出错啦,获取用户信息失败")
+      mixinToast.fire({
+        titleText: '出错啦,获取用户信息失败',
+        icon:'error'
+      })
       this.$router.push('/other/404')
     }
+
     if (userId != null) {
       // 获取用户发的帖子
       getByUserId(userId).then((data) => {
         this.myPost = data
       }).catch(() => {
-        this.$message.error('出错啦,获取该用户发的帖子失败')
+        mixinToast.fire({
+          titleText: '出错啦,获取该用户发的帖子失败'
+        })
+        // this.$message.error('出错啦,获取该用户发的帖子失败')
       })
       // 获取用户收藏的帖子
       getUserCollectPost(userId).then((data) => {
         this.myCollections = data
       }).catch(() => {
-        this.$message.error('出错啦,获取用户收藏的帖子失败')
+        mixinToast.fire({
+          titleText: '出错啦,获取用户收藏的帖子失败'
+        })
+        // this.$message.error('出错啦,获取用户收藏的帖子失败')
       })
     }
   },

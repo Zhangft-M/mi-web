@@ -76,6 +76,7 @@ import {formatTime} from "../utils"
 import Particles from "../components/Particles";
 import {getCategory} from "../utils/sessionUtils";
 import postMixin from "../components/mixin/postMixin";
+import categoryMixin from "../components/mixin/categoryMixin";
 
 export default {
   components: {Particles,Column, Footer, Header, Broadside},
@@ -90,16 +91,15 @@ export default {
   },
   data() {
     return {
+      categoryList:[],
       keyword: null,
-      category: [],
       postItems: []
     }
   },
-  asyncData(context) {
-    console.log(context.store)
-  },
   mounted() {
-
+    getCategory().then((data)=>{
+      this.categoryList = data
+    })
     // console.log(this.category)
     this.getData()
   },
@@ -113,9 +113,6 @@ export default {
     getData() {
       // console.log("调用接口获取数据")
       // this.$message.info("测试",)
-      getCategory().then((data)=>{
-        this.category = data
-      })
       getRecommendData().then((res) => {
         // console.log(res)
         this.postItems = res
@@ -124,25 +121,20 @@ export default {
       })
       // console.log("获取主页数据")
     },
-    toDetails(post){
-      this.toDetail(post)
+    getCategoryName(categoryId){
+      if (this.categoryList.length === 0) {
+        getCategory().then((data)=>{
+          this.categoryList = data
+        })
+      }
+      for (let i = 0; i < this.categoryList.length; i++) {
+        if (categoryId === this.categoryList[i].id){
+          return this.categoryList[i].name
+        }
+      }
     },
     getKeyword(val) {
       this.keyword = val
-    },
-    getCategoryName(val){
-      if (this.category == null) {
-        getCategory().then((data)=>{
-           this.category = data
-        })
-      }
-      for (let i = 0; i < this.category.length; i++) {
-        if (val.toString() === (this.category[i].id).toString()) {
-          //console.log(category[i].name)
-          return this.category[i].name
-        }
-      }
-      // return name
     }
   }
 }

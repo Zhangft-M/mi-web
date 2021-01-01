@@ -1,13 +1,15 @@
 import axios from 'axios'
 import {Notification} from 'element-ui'
 import Cookies from 'js-cookie'
-import {getToken} from "./auth";
+import Qs from "qs"
+import {getToken, removeToken} from "./auth";
+import {mixinToast} from "../components/sweetalert/mixinSweetalert";
 
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://127.0.0.1', // url = base url + request url
+  baseURL: 'http://47.115.130.177', // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: 15000 // request timeout
 })
 
 // request interceptor
@@ -37,10 +39,23 @@ service.interceptors.response.use(
     // console.log(code)
     // console.log(response)
     if (code < 200 || code > 300) {
-      Notification.error({
+      if (response.data.error_description != null) {
+        console.log(response.data.error_description)
+        mixinToast.fire({
+          titleText: response.data.error_description,
+          icon:"error"
+        })
+      }else {
+        mixinToast.fire({
+          title: response.data,
+          icon:"error"
+        })
+      }
+
+     /* Notification.error({
         title: response.data,
         position: "bottom-right"
-      })
+      })*/
       return Promise.reject('error')
     } else {
       // console.log(response)
@@ -53,40 +68,62 @@ service.interceptors.response.use(
     let code = 0
     try {
       code = error.response.status
-      console.log(error.response)
     } catch (e) {
       if (error.toString().indexOf('Error: timeout') !== -1) {
-        Notification.error({
-          title: '网络请求超时',
-          duration: 5000,
-          position: "bottom-right"
+        mixinToast.fire({
+          titleText: '请求超时'
         })
         return Promise.reject(error)
       }
     }
     if (code !== 0) {
       if (code === 401) {
-          console.log("未认证")
+          mixinToast.fire({
+            titleText: '未登录或者登录过期,请重新登录'
+          }).then(()=>{
+            removeToken()
+            this.$router.push('/login')
+          })
       } else if (code === 403) {
         this.$router.push({ path: '/401' })
       } else {
-        const errorMsg = error.response.data
-        if (errorMsg !== undefined) {
-          Notification.error({
-            title: errorMsg,
-            duration: 5000,
-            position: "bottom-right"
+        // console.log(error.response.data.error_description)
+        if (error.response.data.error_description !== undefined){
+          // const errorMsg = JSON.parse(error.response.data.error_description)
+          // console.log(errorMsg)
+          console.log("未知异常")
+          console.log(error.response.data.error_description)
+          mixinToast.fire({
+            title:error.response.data.error_description,
+            position:"top-end"
           })
+        }else {
+          const errorMsg = error.response.data.body == null ? error.response.data : error.response.data.body
+          console.log(errorMsg)
+          if (errorMsg !== undefined) {
+            mixinToast.fire({
+              titleText: errorMsg,
+              position: 'top-end',
+              icon:'error'
+            })
+          }
         }
+
       }
     } else {
-      Notification.error({
-        title: error.response.data,
-        duration: 5000,
-        position: "bottom-right"
-      })
+      if (error.response.data.error_description != null){
+        mixinToast.fire({
+          titleText:error.response.data.error_description,
+          icon:"error"
+        })
+      }else {
+        mixinToast.fire({
+          titleText:error.response.data,
+          icon:"error"
+        })
+      }
     }
-    return Promise.reject(error)
+    return Promise.reject(error.response.data.body == null ? error.response.data : error.response.data.body)
   }
 )
 

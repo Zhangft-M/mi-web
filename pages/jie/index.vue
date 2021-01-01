@@ -124,7 +124,7 @@ export default {
   mixins:[postMixin],
   head() {
     return {
-      title: '社区',
+      title: '明天见',
       link: [
         {rel: 'stylesheet', href: '/css/custom.css'},
       ]

@@ -13,13 +13,13 @@
                   <el-tag v-show="postDetails.top" type="info" effect="dark">置顶</el-tag>
                   <el-tag v-show="postDetails.essence" type="warning" effect="dark">精华</el-tag>
                   <span class="fly-list-nums">
-                  <a href="javascript:void(0)" @click="addCollectPost(postDetails)">
-                            <i class="fa hvr-icon hvr-icon-push"
+                  <a href="javascript:void(0)" class="hvr-icon-push" @click="addCollectPost(postDetails)">
+                            <i class="fa hvr-icon"
                                :class="userCollectionPosts.indexOf(postDetails.id) > -1 ? 'fa-star': 'fa-star-o'"
                                :style="userCollectionPosts.indexOf(postDetails.id) > -1 ? {color: '#FFB800'} : ''"></i>
                     </a>
-                    <a href="javascript:void(0)" type="zan" @click="thumbUp(postDetails)">
-                            <i class="fa hvr-icon hvr-icon-bounce"
+                    <a href="javascript:void(0)" class="hvr-icon-push" type="zan" @click="thumbUp(postDetails)">
+                            <i class="fa hvr-icon"
                                :class="thumbUpList.indexOf(postDetails.id) > -1 ? ' fa-thumbs-up thumb-up-color': 'fa-thumbs-o-up'"
                                :style="thumbUpList.indexOf(postDetails.id) > -1 ? {color: '#5FB878'} : ''"></i>
                             <em>{{ postDetails.voteUp }}</em>
@@ -62,15 +62,15 @@
                     <li data-id="111" class="jieda-daan">
                       <a name="item-1111111111"></a>
                       <div class="detail-about detail-about-reply">
-                        <nuxt-link to="/user/home" class="fly-avatar" target="_blank">
+                        <nuxt-link :to="'/user/home?userId='+comment.userId" class="fly-avatar" target="_blank">
                           <el-avatar size="large"
                                      :src="comment.userAvatar"
                                      :alt="comment.userNickName"></el-avatar>
                         </nuxt-link>
                         <div class="fly-detail-user">
-                          <a href="javascript:void(0)" class="fly-link">
+                          <nuxt-link :to="'/user/home?userId='+comment.userId" class="fly-link">
                             <cite>{{ comment.userNickName }}</cite>
-                          </a>
+                          </nuxt-link>
                           <span v-show="comment.userId === postDetails.userId">(作者)</span>
                         </div>
 
@@ -110,21 +110,23 @@
                     <ul v-show="showReplayList.indexOf(comment.id) > -1" class="animate__animated animate__slideInDown">
                       <li style="margin-top: 5px" v-for="child in comment.children">
                         <div>
-                          <a href="javascript:void(0)" style="float: right" type="zan" @click="thumbUp(child)">
-                            <i class="fa"
-                               :class="thumbUpList.indexOf(child.id) > -1 ? 'fa-thumbs-up thumb-up-color': 'fa-thumbs-o-up'"></i>
-                            <em>{{ child.voteUp }}</em>
-                          </a>
-                          <el-tag effect="plain" type="info" size="mini"><span
-                            style="color: chartreuse">{{ child.userNickName }}</span><span
-                            v-show="child.userId === comment.userId">(楼主)</span></el-tag>&nbsp;<span
-                          style="color: #FFB800">回复</span>&nbsp;<el-tag effect="plain" type="info" size="mini"><span
-                          style="color: #eb7350">{{
-                            child.parentNickName === null ? '' : child.parentNickName
-                          }}</span><span v-show="child.userId === comment.userId">(楼主)</span></el-tag>&nbsp;:&nbsp;<el-link
-                          @click="showReplyDialog(child,comment)"
-                          :underline="false" style=""><p
-                          class="">{{ child.content }}</p></el-link>
+                          <el-card>
+                            <a href="javascript:void(0)" style="float: right" type="zan" @click="thumbUp(child)">
+                              <i class="fa"
+                                 :class="thumbUpList.indexOf(child.id) > -1 ? 'fa-thumbs-up thumb-up-color': 'fa-thumbs-o-up'"></i>
+                              <em>{{ child.voteUp }}</em>
+                            </a>
+                            <el-tag effect="plain" type="info" size="mini"><span
+                              style="color: chartreuse">{{ child.userNickName }}</span><span
+                              v-show="child.userId === comment.userId">(楼主)</span></el-tag>&nbsp;<span
+                            style="color: #FFB800">回复</span>&nbsp;<el-tag effect="plain" type="info" size="mini"><span
+                            style="color: #eb7350">{{
+                              child.parentNickName === null ? '' : child.parentNickName
+                            }}</span><span v-show="child.userId === comment.userId">(楼主)</span></el-tag>&nbsp;:&nbsp;<el-link
+                            @click="showReplyDialog(child,comment)"
+                            :underline="false" style=""><p
+                            class="">{{ child.content }}</p></el-link>
+                          </el-card>
                         </div>
                       </li>
                     </ul>
@@ -142,16 +144,16 @@
                       :rows="2"
                       placeholder="请输入内容"
                       v-model="text">
-                  </el-input>
+                    </el-input>
                   </div>
-                  <div style="padding-top: 10px">
+                  <div style="padding-top: 10px" v-show="showEmailReplyOptions">
                     <label>是否接收回复邮件:</label>
                     <el-radio-group v-model="replyData.receiveReply">
                       <el-radio :label="true" border size="mini">是</el-radio>
                       <el-radio :label="false" border size="mini">否</el-radio>
                     </el-radio-group>
                   </div>
-                  <el-button :disabled="text.length<=0" style="float: right" @click="submit()" size="mini">提交
+                  <el-button :disabled="text.length<=0" style="float: right;margin-top: 10px" @click="submit()" size="mini">提交
                     <i class="el-icon-edit"></i>
                   </el-button>
                 </div>
@@ -161,7 +163,7 @@
         </div>
       </div>
       <el-dialog :title="'回复'+ replyData.toUserNickName" :visible.sync="isShowReplyDialog"
-                 @close="isShowReplyDialog = false">
+                 @close="isShowReplyDialog = false" style="height: 550px">
         <div style="height: 90px">
           <el-input
             type="textarea"
@@ -169,7 +171,7 @@
             :placeholder="'@'+replyData.toUserNickName + ':'"
             v-model="replyData.content">
           </el-input>
-          <div style="padding-top: 10px">
+          <div style="padding-top: 10px" v-show="showEmailReplyOptions">
             <label>是否接收回复邮件:</label>
             <el-radio-group v-model="replyData.receiveReply">
               <el-radio :label="true" border size="mini">是</el-radio>
@@ -192,16 +194,21 @@ import {getThumbUpList, thumbUp} from "../../api/thumbUp";
 import {getToken} from "../../utils/auth";
 import {addUserCollections, getUserCollections} from "../../api/userCollections";
 import Particles from "../../components/Particles";
+import fullScreenLoadingMixin from "../../components/mixin/fullScreenLoadingMixin";
+import {confirmAlert, mixinAlert, mixinToast} from "../../components/sweetalert/mixinSweetalert";
+import showEmailReplyMixin from "../../components/mixin/showEmailReplyMixin";
+import userInfoMixin from "../../components/mixin/userInfoMixin";
 
 const defaultReplyData = {
   content: '',
   parentId: '',
   toUserNickName: '',
   postId: '',
-  receiveReply: true,
+  receiveReply: false,
 }
 export default {
   components: {Particles},
+  mixins: [fullScreenLoadingMixin, showEmailReplyMixin,userInfoMixin],
   head() {
     return {
       title: '详情页',
@@ -222,30 +229,28 @@ export default {
       commentData: [],
       isShowReplyDialog: false,
       chooseData: null, // 当前评论的数据节点
+      // fullscreenLoading: false,
       replyData: {
         content: '',
         toUserNickName: '',
         parentId: '',
         postId: '',
-        receiveReply: true,
+        receiveReply: false,
       }
     }
   },
-  asyncData(context) {
-    console.log(context)
-  },
   mounted() {
-      this.$nextTick(() => {
-        this.$nuxt.$loading.start()
-        this.initData()
-        getThumbUpList().then((data) => {
-          this.thumbUpList = data
-        })
-        getUserCollections().then((data) => {
-          this.userCollectionPosts = data
-        })
-        this.$nuxt.$loading.finish()
+    this.$nextTick(() => {
+      this.$nuxt.$loading.start()
+      this.initData()
+      getThumbUpList().then((data) => {
+        this.thumbUpList = data
       })
+      getUserCollections().then((data) => {
+        this.userCollectionPosts = data
+      })
+      this.$nuxt.$loading.finish()
+    })
 
   },
   methods: {
@@ -256,6 +261,7 @@ export default {
       }
       getDataById(postId).then((res) => {
         this.postDetails = res
+        this.resetUserInfo()
         getCommentDataByPostId(postId).then((res) => {
           this.commentData = res
         }).catch(() => {
@@ -263,6 +269,7 @@ export default {
         })
       }).catch(() => {
         // 数据详情加载失败,路由到404页面
+        this.$router.go(-1)
       })
     },
     showReply(val) {
@@ -339,19 +346,44 @@ export default {
         this.toLogin()
         return
       }
-      const commentData = {
-        content: this.text,
-        postId: this.postDetails.id,
-        receiveReply: this.replyData.receiveReply
-      }
-      addComment(commentData).then((data) => {
-        // 添加成功
-        this.commentData.push(data)
-        this.$message.success("添加成功")
-      }).catch(() => {
-        // 添加失败
-      }).finally(() => {
-        this.text = ''
+      confirmAlert.fire({
+        title: '提示',
+        titleText: '是否提交',
+        icon: 'question'
+      }).then((result) => {
+          if (result.isConfirmed) {
+            this.startLoading()
+            const commentData = {
+              content: this.text,
+              postId: this.postDetails.id,
+              receiveReply: this.replyData.receiveReply
+            }
+            // this.fullscreenLoading = true
+            addComment(commentData).then((data) => {
+              // 添加成功
+              this.stopLoading()
+              this.commentData.push(data)
+              mixinAlert.fire({
+                title: '提示',
+                titleText: '提交成功',
+                timer: 1000,
+                icon: 'success'
+              })
+              // this.$message.success("添加成功")
+            }).catch(() => {
+              // 添加失败
+              this.$message.error("出错啦!添加失败,请稍后重试")
+            }).finally(() => {
+              this.text = ''
+              this.stopLoading()
+            })
+          }
+        }
+      ).catch(() => {
+        mixinToast.fire({
+          title: '错误',
+          titleText: '取消提交'
+        })
       })
     },
     /**
@@ -379,29 +411,52 @@ export default {
         this.toLogin()
         return
       }
+      this.startLoading()
       addComment(this.replyData).then((data) => {
         const index = this.commentData.indexOf(this.chooseData)
+        console.log("会报错")
+        console.log(index)
         data.parentNickName = this.replyData.toUserNickName
+        if (this.commentData[index].children == null) {
+          this.commentData[index].children = []
+        }
         this.commentData[index].children.push(data)
-        this.$message.success("添加成功");
+        this.stopLoading()
+        mixinAlert.fire({
+          titleText: '回复成功',
+          icon: 'success'
+        })
       }).catch(() => {
-        this.$message.error("添加失败")
+        mixinAlert.fire({
+          titleText: '回复失败',
+          icon:'error'
+        })
       }).finally(() => {
         Object.assign(this.replyData, defaultReplyData)
         this.isShowReplyDialog = false
         this.chooseData = null
+        // this.fullscreenLoading = false
+        this.stopLoading()
       })
 
     },
     toLogin() {
-      this.$confirm('未登录,是否去登录?').then(() => {
-        this.$router.push('/login')
+      confirmAlert.fire({
+        title: '提示',
+        titleText: '登录之后才能操作,是否去登录',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$router.push('/login')
+        } else {
+          confirmAlert.close()
+        }
       }).catch(() => {
-
+        this.$message.warning("无法操作,请先登录")
       })
     }
+  },
 
-  }
+
 }
 </script>
 
@@ -411,7 +466,7 @@ export default {
   font-family: 华文行楷, serif;
   color: rgba(2, 4, 10, 0.59);
   text-indent: 2em;
-  white-space:pre-wrap;
+  white-space: pre-wrap;
 }
 
 .thumb-up-color {

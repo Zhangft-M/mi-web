@@ -16,7 +16,7 @@
 export default {
   head() {
     return {
-      script: [{src: 'https://www.recaptcha.net/recaptcha/api.js', async: true, defer: true}]
+      script: [{src: 'https://www.recaptcha.net/recaptcha/api.js'}]
     }
   },
   data() {
@@ -25,7 +25,7 @@ export default {
     }
   },
   name: "Verify",
-  beforeMount() {
+  mounted() {
     const self = this
     this.recaptcha = window.grecaptcha
     window.successCallback = function (args) {

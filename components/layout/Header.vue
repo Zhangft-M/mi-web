@@ -1,10 +1,10 @@
 <template>
   <div class="fly-header" style="z-index: 1000">
     <div class="layui-container">
-      <nuxt-link class="fly-logo" to="/">
-        <el-image src=""></el-image>
+      <nuxt-link class="fly-logo" to="/" tag="a">
+        <el-image style="width: 40px;height: 40px"  class="animate__animated animate__wobble" src="/images/logo/logo.png"></el-image>
       </nuxt-link>
-      <ul class="layui-nav fly-nav layui-hide-xs">
+      <ul class="layui-nav fly-nav layui-hide-xs animate__animated animate__fadeInDown" >
         <li class="layui-nav-item">
           <nuxt-link to="/" target="_blank"><i class="iconfont icon-jiaoliu"></i>交流</nuxt-link>
         </li>
@@ -21,8 +21,7 @@
       </ul>
 
 
-      <ul class="layui-nav fly-nav-user">
-
+      <ul class="layui-nav fly-nav-user animate__animated animate__zoomIn">
         <!-- 未登入的状态 -->
         <li class="layui-nav-item" v-show="!isLogin">
           <nuxt-link class="iconfont icon-touxiang layui-hide-xs" to="/login"></nuxt-link>
@@ -40,40 +39,29 @@
         <li v-show="isLogin" style="padding-top: 9px;padding-right: 20px">
           <el-dropdown >
             <span class="el-dropdown-link">
-              <el-avatar :src="avatar" :size="50"></el-avatar>
+              <el-avatar :src="userInfo.avatar" :size="50"></el-avatar>
              </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
-                <nuxt-link to="/jie/add" target="_blank"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>发帖</nuxt-link>
+                <i class="fa fa-database">个人积分&nbsp;:{{userInfo.point}}</i>
               </el-dropdown-item>
               <el-dropdown-item>
-                <nuxt-link to="/user/home"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</nuxt-link>
+                <nuxt-link to="/jie/add" target="_blank"><i class="fa fa-pencil" style="margin-left: 2px; font-size: 22px;"></i>发帖</nuxt-link>
               </el-dropdown-item>
               <el-dropdown-item>
-                <nuxt-link to="/user/set"><i class="layui-icon">&#xe620;</i>基本设置</nuxt-link>
+                <nuxt-link to="/user/home" target="_blank"><i class="fa fa-home" style="margin-left: 2px; font-size: 22px;"></i>我的主页</nuxt-link>
               </el-dropdown-item>
               <el-dropdown-item>
-                <nuxt-link to="/user/message"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</nuxt-link>
+                <nuxt-link to="/user/set"><i class="fa fa-sliders" style="margin-left: 2px; font-size: 22px;"></i>基本设置</nuxt-link>
               </el-dropdown-item>
               <el-dropdown-item>
-                <a href="javascript:void(0)" @click="logout" style="text-align: center;">退出</a>
+                <nuxt-link to="/user/message"><i class="fa fa-commenting-o" style="margin-left: 2px; font-size: 22px;"></i>我的消息</nuxt-link>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-link @click="logout" style="text-align: center;"><i class="fa fa-sign-out" style="margin-left: 2px; font-size: 22px;"></i>退出</el-link>
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-<!--          <dl class="layui-nav-child">
-            <dd>
-              <nuxt-link :to="'/user/set?userId=' + userId"><i class="layui-icon">&#xe620;</i>基本设置</nuxt-link>
-            </dd>
-            <dd>
-              <nuxt-link :to="'/user/set?userId=' + userId"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息
-              </nuxt-link>
-            </dd>
-            <dd>
-              <nuxt-link :to="'/user/set?userId=' + userId"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</nuxt-link>
-            </dd>
-            <hr style="margin: 5px 0;">
-            <dd><a href="javascript:void(0)" @click="logout" style="text-align: center;">退出</a></dd>
-          </dl>-->
         </li>
       </ul>
     </div>
@@ -82,11 +70,14 @@
 
 <script>
 import {getToken} from "../../utils/auth";
-import {getUserInfo} from "../../utils/sessionUtils";
-import {getInfo} from "../../api/user";
+import userInfoMixin from "../mixin/userInfoMixin";
+import {confirmAlert, mixinToast} from "../sweetalert/mixinSweetalert";
+import {getInfoWithNoId} from "../../api/user";
+
 
 export default {
   name: "Header",
+  mixins:[userInfoMixin],
   data() {
     return {
       keyword: null,
@@ -94,17 +85,19 @@ export default {
       avatar: '',
       userId: "",
       nickName: "",
+      point: ''
     }
   },
   mounted() {
     if (getToken() != null) {
       this.isLogin = true
-      getUserInfo().then((data) => {
-        this.userId = data.id
-        this.nickName = data.nickName
-        this.avatar = data.avatar
+      /*this.$store.dispatch('user/getInfo').then((data)=>{
+        this.userInfo = data
+      })*/
+      getInfoWithNoId().then((data)=>{
+        this.userInfo = data
       })
-      // console.log(userInfo)
+      // console.log(this.userInfo)
     }
   },
   props: ['isSearch'],
@@ -113,6 +106,21 @@ export default {
       this.$emit("getKeyword", this.keyword)
     },
     logout() {
+      confirmAlert.fire({
+        title: '退出',
+        titleText: '是否退出',
+        confirmButtonText: '是',
+        cancelButtonText: '否'
+      }).then((result)=>{
+        if (result.isConfirmed){
+          this.$store.dispatch('user/logout')
+          mixinToast.fire({
+            titleText:'退出成功',
+            icon:'success'
+          })
+          this.$router.push('/')
+        }
+      })
 
     }
   }

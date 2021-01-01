@@ -40,5 +40,14 @@ export async function getCategory() {
   } else {
     return JSON.parse(category)
   }
-
 }
+
+export function resetUserInfo(data){
+  const userInfo = JSON.stringify(data);
+  const item = sessionStorage.getItem("userInfo");
+  if (item != null) {
+    sessionStorage.removeItem("userInfo")
+  }
+  sessionStorage.setItem("userInfo",userInfo)
+}
+

@@ -1,5 +1,5 @@
 {
-  "name": "mi",
+  "name": "seeyoutomorrow",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -7,6 +7,12 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate"
+  },
+  "config": {
+    "nuxt": {
+      "host": "127.0.0.1",
+      "post": 3000
+    }
   },
   "dependencies": {
     "@tinymce/tinymce-vue": "^3.2.4",

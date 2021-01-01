@@ -1,29 +1,13 @@
 <template>
   <div style="padding-bottom: 30px">
-    <div class="fly-panel fly-column">
+    <div class="fly-panel fly-column animate__animated animate__swing">
       <div class="" style="">
         <el-card style="height: 80px;border-radius: 10px;opacity: 0.8">
           <ul class="layui-clear">
-            <!--          layui-this为已选中状态-->
-            <!--<nuxt-link to="/?categoryId=0" active-class='layui-this' tag="li" exact>
-              <a class="nav-font hvr-icon-pulse-grow"><i class="fa fa-home hvr-icon"></i>&nbsp;首页</a>
-            </nuxt-link>-->
             <nuxt-link v-for="item in categoryList" :key="item.id" active-class='layui-this' :to="item|filterPath()"
                        tag="li" exact>
-              <a class="nav-font" :class="item.iconClass"><i :class="item.icon"></i>&nbsp;{{ item.name }}</a>
+              <a class="nav-font animate__animated" :class="item.iconClass"><i :class="item.icon"></i>&nbsp;{{ item.name }}</a>
             </nuxt-link>
-            <!--            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>-->
-            <!-- 用户登入后显示 -->
-            <!--<nuxt-link to="/user"></nuxt-link>
-            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block">
-              <nuxt-link to="/user">我发表的帖</nuxt-link>
-            </li>
-            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block">
-              <nuxt-link to="/user/index#collection">我收藏的贴</nuxt-link>
-            </li>
-            <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block fly-right">
-              <nuxt-link to="/user/index#collection">我收藏的贴</nuxt-link>
-            </li>-->
           </ul>
         </el-card>
       </div>
@@ -32,7 +16,8 @@
 </template>
 
 <script>
-import {getCategory} from "../../utils/sessionUtils";
+import {getCategory, setCategory} from "../../utils/sessionUtils";
+import {getCategories} from "../../api/category";
 
 const homePath = '/';
 const otherPath = '/jie?categoryId=';
@@ -44,9 +29,13 @@ export default {
     }
   },
   mounted() {
-    getCategory().then((data) => {
+    getCategories().then((data)=>{
       this.categoryList = data
+      setCategory(data)
     })
+    /*getCategory().then((data) => {
+      this.categoryList = data
+    })*/
   },
   filters: {
     filterPath(val) {

@@ -1,14 +1,17 @@
 <template>
-<div style="margin: 20px">
-  <el-row class="user-row">
+<div style="margin: 20px;padding-left: 20px">
+  <el-row class="user-row animate__animated animate__bounceInDown">
     <el-col :offset="10" :span="10">
-      <a href="javascript:void(0)" @click="openDialog(0)" alt="点击更换头像">
-        <el-avatar :src="userInfo.avatar" alt="点击修改头像" :size="100" @click="openDialog(0)"></el-avatar>
-      </a>
+      <el-tooltip class="item" effect="dark" content="点击更换头像" placement="top">
+        <el-link :underline="false" @click="openDialog(0)" alt="点击更换头像">
+          <el-avatar :src="userInfo.avatar" alt="点击修改头像" :size="100" @click="openDialog(0)"></el-avatar>
+        </el-link>
+      </el-tooltip>
     </el-col>
+
   </el-row>
-  <el-row class="user-row">
-    <el-col :offset="6" :span="0.5" style="margin-top: 7px">
+  <el-row class="user-row animate__animated animate__backInLeft">
+    <el-col :offset="6" :span="1" style="margin-top: 7px">
       <p class="label-font">用户名:</p>
     </el-col>
     <el-col :offset="0" :span="9">
@@ -24,11 +27,11 @@
       </el-row>
     </el-col>
   </el-row>
-  <el-row class="user-row">
+  <el-row class="user-row animate__animated animate__backInRight">
     <el-col :offset="6" :span="1" style="margin-top: 7px">
       <p class="label-font">昵称:</p>
     </el-col>
-    <el-col :offset="0.5" :span="9">
+    <el-col :offset="0" :span="9">
       <el-row :gutter="20">
         <el-col :span="22">
           <el-input disabled  v-model="userInfo.nickName" class="user-input">
@@ -42,14 +45,14 @@
     </el-col>
   </el-row>
 
-  <el-row class="user-row">
+  <el-row class="user-row animate__animated animate__backInLeft">
     <el-col :offset="6" :span="1" style="margin-top: 7px">
       <p class="label-font">性别:</p>
     </el-col>
     <el-col :offset="0.5" :span="9">
       <el-row :gutter="20">
         <el-col :span="22">
-          <el-radio-group v-model="userInfo.gender" disabled>
+          <el-radio-group v-model="userInfo.gender" disabled style="padding-left: 10px">
             <el-radio :label= "1"  border>
               <i class="fa fa-mars"></i>
             </el-radio>
@@ -65,14 +68,14 @@
     </el-col>
   </el-row>
 
-  <el-row class="user-row">
-    <el-col :offset="6" :span="0.5" style="margin-top: 7px">
+  <el-row class="user-row animate__animated animate__backInRight">
+    <el-col :offset="6" :span="1" style="margin-top: 7px">
       <p class="label-font">手机号:</p>
     </el-col>
     <el-col :offset="0" :span="9">
       <el-row :gutter="20">
         <el-col :span="22">
-          <el-input  v-model="userInfo.phone" class="user-input" disabled>
+          <el-input  v-model="userInfo.phoneNumber" class="user-input" disabled>
             <i slot="prefix" class="el-input__icon fa fa-mobile" style="padding-left: 5px"></i>
           </el-input>
         </el-col>
@@ -83,7 +86,7 @@
     </el-col>
   </el-row>
 
-  <el-row class="user-row">
+  <el-row class="user-row animate__animated animate__backInLeft">
     <el-col :offset="6" :span="1" style="margin-top: 7px">
       <p class="label-font">邮箱:</p>
     </el-col>
@@ -100,16 +103,18 @@
       </el-row>
     </el-col>
   </el-row>
-  <el-row class="user-row">
+  <el-row class="user-row animate__animated animate__backInUp">
     <el-col :offset="8" :span="0.5" style="margin-top: 7px">
-      <el-button @click="openDialog(5)">修改密码</el-button>
+      <el-button type="primary" @click="openDialog(5)">修改密码</el-button>
     </el-col>
     <el-col :offset="0" :span="10" style="margin-left: 150px;margin-top: 7px">
-      <el-button @click="openDialog(6)">注销账号</el-button>
+      <el-tooltip class="item" effect="dark" content="开发中,暂不可以使用" placement="right-start">
+        <el-button disabled type="danger" @click="">注销账号</el-button>
+      </el-tooltip>
     </el-col>
   </el-row>
   <div>
-    <DialogForm :dialogVisible = 'dialogVisible' :formType = 'formType' @cancelChange="cancelChange"></DialogForm>
+    <DialogForm :personal-phone="userInfo.phoneNumber" @syncUserInfo="syncUserInfo" :dialogVisible = 'dialogVisible' :formType = 'formType' @cancelChange="cancelChange"></DialogForm>
   </div>
 </div>
 </template>
@@ -117,9 +122,12 @@
 <script>
 import DialogForm from "../../components/DialogForm";
 import {getToken} from "../../utils/auth";
-import {getUserInfo} from "../../utils/sessionUtils";
+import userInfoMixin from "../../components/mixin/userInfoMixin";
+import {getInfoWithNoId} from "../../api/user";
+
 export default {
   components: {DialogForm},
+  mixins:[userInfoMixin],
   layout:'userLayout',
   head() {
     return {
@@ -128,7 +136,6 @@ export default {
   },
   data(){
     return{
-      userInfo : {},
       val:'',
       dialogVisible: false,
       formType : -1
@@ -136,9 +143,9 @@ export default {
   },
   mounted() {
     if (getToken() == null) {
-      this.$router.push('/other/404')
+      this.$router.push('/login')
     }
-    getUserInfo().then((data) => {
+    getInfoWithNoId().then((data)=>{
       this.userInfo = data
     })
   },
@@ -151,6 +158,9 @@ export default {
     cancelChange(){
       this.formType = -1
       this.dialogVisible = false
+    },
+    syncUserInfo(userInfo){
+      this.userInfo = userInfo
     }
   }
 
@@ -166,7 +176,7 @@ export default {
 .user-input input.el-input__inner{
   border-radius: 10px;
   margin-left: 10px;
-  opacity: 1;
+  opacity: 0.75;
   background-color: #282C35;
   font-family: "Arial Black";
 }
@@ -176,6 +186,7 @@ export default {
 /*解决dialog出现页面抖动情况*/
 body{
   padding-right: 0 !important;
+  overflow-x: hidden;
 }
 </style>
 

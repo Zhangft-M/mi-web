@@ -1,4 +1,5 @@
 import request from '../utils/request'
+import Qs from 'qs'
 
 export function login(data) {
   return request({
@@ -18,15 +19,15 @@ export function registe(data) {
 
 export function updateUserInfo(data) {
   return request({
-    url: '/miUser/user/update',
+    url: `/miUser/user/update`,
     method: 'put',
-    data
+    data:Qs.stringify(data)
   })
 }
 
 export function changePassword(data){
   return request({
-    url: '/miUser/user/changerPassword',
+    url: '/miUser/user/changePassword',
     method: 'put',
     data
   })
@@ -45,8 +46,15 @@ export function getInfo(userId) {
     url: `/miUser/user/info/`,
     method: 'get',
     params:{
-      userId: userId == null ? null : userId
+      userId: userId == null ? '' : userId
     }
+  })
+}
+
+export function getInfoWithNoId() {
+  return request({
+    url: `/miUser/user/info/`,
+    method: 'get',
   })
 }
 
@@ -62,5 +70,13 @@ export function cancelUser(data) {
     url: '/miUser/user/cancel',
     method: 'post',
     data
+  })
+}
+
+export function validatePasswordVerifyCode(data) {
+  return request({
+    url: '/miUser/user/checkUser/phoneNumber',
+    method: 'post',
+    data: Qs.stringify(data)
   })
 }
