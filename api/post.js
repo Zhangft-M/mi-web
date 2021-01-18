@@ -5,7 +5,7 @@ import {stringify} from 'qs'
 export function getRecommendData() {
   return request(
     {
-      url: `/miPost/post/recommend`,
+      url: `/miPost/post/recommend/v1`,
       method: 'get'
     }
   )

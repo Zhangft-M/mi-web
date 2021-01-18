@@ -17,7 +17,7 @@ export const mutations = {
 export const actions = {
   setCategorise({commit}) {
     return new Promise((resolve, reject) => {
-      getCategories().then((data)=>{
+     getCategories().then((data)=>{
         commit("SET_CATEGORY_LIST", data)
         resolve(data)
       }).catch((error)=>{

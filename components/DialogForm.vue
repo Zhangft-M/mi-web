@@ -1,23 +1,28 @@
 <template xmlns:el-col="http://www.w3.org/1999/html">
   <div>
-    <el-dialog v-loading="isLoading" element-loading-spinner="el-icon-loading" :visible="dialogVisible"
-               :style="getStyle"  :show-close="false"
+    <el-dialog v-loading="isLoading"
+               element-loading-spinner="el-icon-loading" :visible="dialogVisible"
+               :style="getStyle" :show-close="false"
                custom-class="custom-dialog animate__animated animate__jackInTheBox animate__fadeOutDown"
                :lock-scroll="false"
     >
       <el-row v-if="formType === 0" style="height: 50px" class="animate__animated animate__bounceInLeft">
-        <el-col :offset="7">
-          <div>
-            <el-upload
-              class="avatar-uploader"
-              action=""
-              :show-file-list="false"
-              :http-request="uploadImage"
-            >
-              <el-avatar shape="circle" :size="100" fit="scale-down" v-if="imageUrl" :src="imageUrl" class="avatar"/>
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
-          </div>
+        <el-col :offset="1">
+          <el-upload v-if="!imageUrl"
+            action="string"
+            drag
+            :on-change="openCropper"
+            class="upload-demo"
+            :show-file-list="false"
+            :http-request="uploadImage"
+            :auto-upload="false"
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          </el-upload>
+        </el-col>
+        <el-col :offset="9">
+          <el-avatar shape="circle" :size="100" fit="scale-down" v-if="imageUrl" :src="imageUrl" class="avatar"/>
         </el-col>
       </el-row>
       <el-form class="custom-form" :model="form" ref="form10" :rules="rules"
@@ -44,7 +49,7 @@
               <i slot="prefix" class="el-input__icon fa fa-mobile" style="padding-left: 5px"></i>
             </el-input>
           </el-form-item>
-          <VerifyCode :phoneNumber="form.phoneNumber"  :type="0" ref="verifyCode"></VerifyCode>
+          <VerifyCode :phoneNumber="form.phoneNumber" :type="0" ref="verifyCode"></VerifyCode>
         </el-form>
       </div>
       <div v-if="formType === 4">
@@ -60,7 +65,8 @@
       </div>
       <div v-if="formType === 5">
         <div>
-          <el-steps :active="activeIndex" space="1" finish-status="success" simple class="animate__animated animate__backInDown">
+          <el-steps :active="activeIndex" space="1" finish-status="success" simple
+                    class="animate__animated animate__backInDown">
             <el-step title="手机验证" icon="el-icon-edit"></el-step>
             <el-step title="修改密码" icon="el-icon-upload"></el-step>
           </el-steps>
@@ -68,7 +74,8 @@
         <div v-if="activeIndex === 0" style="margin-top: 10px">
           <el-form class="custom-form" :model="form" label-width="80px" ref="form50"
                    :rules="rules">
-            <el-form-item label="手机号:" label-width="" prop="phoneNumber" class="animate__animated animate__bounceInLeft">
+            <el-form-item label="手机号:" label-width="" prop="phoneNumber"
+                          class="animate__animated animate__bounceInLeft">
               <el-input disabled v-model.number="form.phoneNumber" autocomplete="off">
                 <i slot="prefix" class="el-input__icon fa fa-mobile" style="padding-left: 5px"></i>
               </el-input>
@@ -96,7 +103,7 @@
               <i slot="prefix" class="el-input__icon fa fa-mobile" style="padding-left: 5px"></i>
             </el-input>
           </el-form-item>
-          <VerifyCode :phoneNumber="form.phoneNumber"  :type="0" ref="verifyCode"></VerifyCode>
+          <VerifyCode :phoneNumber="form.phoneNumber" :type="0" ref="verifyCode"></VerifyCode>
         </el-form>
       </div>
       <div v-if="formType === 7">
@@ -128,16 +135,21 @@
         </el-col>
       </el-row>
     </el-dialog>
+    <div>
+      <ImageCropper :image="image" @successUpload="successUpload" :isShow="isShowImageCropper"
+                    @closeImageCropperDialog="closeImageCropperDialog"></ImageCropper>
+    </div>
   </div>
 </template>
 
 <script>
-import {cancelUser, changePassword, updateUserInfo,validatePasswordVerifyCode} from "../api/user";
+import {cancelUser, changePassword, updateUserInfo, validatePasswordVerifyCode} from "../api/user";
 import VerifyCode from "./VerifyCode";
 import {encrypt} from "../utils/rsaEncrypt";
 import {uploadImage} from "../api/tool";
 import rulesMixin from "./mixin/rulesMixin";
 import {mixinToast} from "./sweetalert/mixinSweetalert";
+import ImageCropper from "@/components/ImageCropper";
 
 const defaultForm = {
   username: '',
@@ -149,10 +161,12 @@ const defaultForm = {
 }
 export default {
   name: "DialogForm",
-  components: {VerifyCode},
-  mixins:[rulesMixin,VerifyCode],
+  components: {VerifyCode, ImageCropper},
+  mixins: [rulesMixin, VerifyCode],
   data() {
     return {
+      isShowImageCropper: false,
+      image: '',
       customDialog: {
         height: '250px',
         borderRadius: '15px'
@@ -166,9 +180,9 @@ export default {
         email: undefined,
         verifyCode: undefined
       },
-      genderItems:[
-        {label: '男',value: 1},
-        {label: '女',value: 0}
+      genderItems: [
+        {label: '男', value: 1},
+        {label: '女', value: 0}
       ],
       //formType: null,
       activeIndex: 0,
@@ -176,13 +190,33 @@ export default {
       imageUrl: '',
       showPassword: false,
       isLoading: false,
-      formRef: ''
+      formRef: '',
+      option: {
+        img: '', // 裁剪图片的地址
+        info: true, // 裁剪框的大小信息
+        outputSize: 1, // 裁剪生成图片的质量
+        outputType: 'jpeg', // 裁剪生成图片的格式
+        canScale: true, // 图片是否允许滚轮缩放
+        autoCrop: true, // 是否默认生成截图框
+        autoCropWidth: 1200, // 默认生成截图框宽度
+        autoCropHeight: 240, // 默认生成截图框高度
+        fixedBox: true, // 固定截图框大小 不允许改变
+        fixed: true, // 是否开启截图框宽高固定比例
+        fixedNumber: [25, 6], // 截图框的宽高比例
+        // full: true, // 是否输出原图比例的截图
+        canMoveBox: false, // 截图框能否拖动
+        original: false, // 上传图片按照原始比例渲染
+        centerBox: true, // 截图框是否被限制在图片里面
+        infoTrue: false, // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
+        mode: 'cover',    // cover  图片铺满容器
+      },
+      isStartCropperImage: false
     }
   },
-  props: ['formType', 'dialogVisible',"personalPhone"],
+  props: ['formType', 'dialogVisible', "personalPhone"],
   updated() {
     this.formRef = 'form' + this.formType + this.activeIndex
-    if (this.formType ===5 || this.formType === 6) {
+    if (this.formType === 5 || this.formType === 6) {
       this.form.phoneNumber = Number.parseInt(this.personalPhone)
     }
   },
@@ -193,14 +227,14 @@ export default {
       console.log("清除信息")
       const type = this.formType
       console.log(type)
-      if (type !== 0){
+      if (type !== 0) {
         console.log(this.formRef)
         this.$refs[this.formRef].resetFields()
       }
-      if (type === 3 || type ===4 || type === 6){
+      if (type === 3 || type === 4 || type === 6) {
         this.$refs.verifyCode.resetVerifyCode()
       }
-      if (type === 5 && this.activeIndex === 0){
+      if (type === 5 && this.activeIndex === 0) {
         this.$refs.verifyCode.resetVerifyCode()
       }
       this.$emit('cancelChange')
@@ -216,14 +250,14 @@ export default {
       }
       if (this.formType === 0) {
         // 修改头像
-        if (this.imageUrl === ''){
+        if (this.imageUrl === '') {
           mixinToast.fire({
             titleText: '请先上传头像',
-            icon:"warning"
+            icon: "warning"
           })
           return
         }
-        const data = {avatar:this.imageUrl}
+        const data = {avatar: this.imageUrl}
         this.isLoading = true
         this.handlerUpdateInfo(data)
         return;
@@ -235,28 +269,28 @@ export default {
             return
           }
           this.isLoading = true
-          if (this.formType === 6){
-            cancelUser(this.form).then(()=>{
+          if (this.formType === 6) {
+            cancelUser(this.form).then(() => {
               this.$store.dispatch('user/resetUserInfo')
               this.isLoading = false
               this.$router.push('/')
             })
-          }else {
+          } else {
             this.handlerUpdateInfo(this.form)
           }
         }
       })
     },
-    handlerUpdateInfo(requestData){
+    handlerUpdateInfo(requestData) {
       updateUserInfo(requestData).then((data) => {
         // this.$store.dispatch('user/setUserInfo', data)
-        this.$emit("syncUserInfo",data)
+        this.$emit("syncUserInfo", data)
         this.cancelChange();
         this.$message.success("更新成功")
       }).catch(() => {
         this.cancelChange();
         this.$message.error("更新失败")
-      }).finally(() =>{
+      }).finally(() => {
         this.isLoading = false
       })
     },
@@ -292,7 +326,7 @@ export default {
             this.$refs.verifyCode.resetVerifyCode()
           })
         } else {
-         this.$message.error("请正确填写表单哦")
+          this.$message.error("请正确填写表单哦")
         }
       })
     },
@@ -310,7 +344,6 @@ export default {
       }
     },
     changeUserPassword() {
-      const {password} = this.form.password
       const data = {
         password: encrypt(this.form.password.trim())
       }
@@ -340,22 +373,39 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!');
         return
       }
-      const formData = new FormData()
-      formData.append("avatar",file);
-      this.isLoading = true
-      uploadImage(formData).then((data) => {
-        this.imageUrl = data
-        this.isLoading = false
-        mixinToast.fire({
-          titleText: '上传成功',
-          icon:"success",
-          position:"top-end"
+      console.log(file.path)
+
+    },
+    finish() {
+
+    },
+    closeImageCropperDialog() {
+      this.isShowImageCropper = false
+    },
+    successUpload(data) {
+      this.isShowImageCropper = false
+      this.imageUrl = data
+    },
+    openCropper(file, fileList) {
+      const _self = this
+      const reader = new FileReader()
+      reader.readAsDataURL(file.raw)
+      let result = null
+      reader.onload = function () {
+        result = reader.result
+        _self.$nextTick(() => {
+          // _self.option.img = result
+          _self.image = result
+          console.log(_self.option.img)
+          _self.isShowImageCropper = true
+          // _self.isStartCropperImage = true
         })
-      }).catch((error) => {
-        console.log(error)
-        this.isLoading = false
-        this.$message.error("上传失败")
-      })
+
+      }
+      // this.image = result
+      // console.log(this.image)
+
+
     }
   }
 }
@@ -410,4 +460,5 @@ export default {
   overflow: auto;
   margin: 0;
 }
+
 </style>

@@ -1,5 +1,6 @@
 <template>
   <div>
+<!--    <ClickAnime></ClickAnime>-->
     <Header :is-search="false"></Header>
     <Particles></Particles>
     <div id="wrapper">
@@ -10,7 +11,7 @@
             <el-card class="hvr-bob">
               <div slot="header" class="clearfix">
                 <span style="font-family: 幼圆,serif;color: #5FB878"><i
-                  class="fa fa-bullseye"></i>&nbsp;{{getCategoryName(postItem.categoryId)}}</span>
+                  class="fa fa-bullseye"></i>&nbsp;{{ getCategoryName(postItem.categoryId) }}</span>
                 <nuxt-link :to="'/jie?categoryId=' + postItem.categoryId" style="float: right; padding: 3px 0">
                   更多
                 </nuxt-link>
@@ -64,6 +65,7 @@
       </div>
     </div>
     <Footer></Footer>
+    <music-player></music-player>
   </div>
 </template>
 <script>
@@ -76,32 +78,42 @@ import {formatTime} from "../utils"
 import Particles from "../components/Particles";
 import {getCategory} from "../utils/sessionUtils";
 import postMixin from "../components/mixin/postMixin";
+import ClickChangeColor from "@/components/ClickChangeColor";
 import categoryMixin from "../components/mixin/categoryMixin";
 
 export default {
-  components: {Particles,Column, Footer, Header, Broadside},
-  mixins:[postMixin],
+  components: {Particles, Column, Footer, Header, Broadside},
+  mixins: [postMixin],
   head() {
     return {
       title: '首页',
       link: [
         {rel: 'stylesheet', href: '/css/custom.css'},
-      ]
+      ],
     }
   },
   data() {
     return {
-      categoryList:[],
+      categoryList: [],
       keyword: null,
       postItems: []
     }
   },
   mounted() {
-    getCategory().then((data)=>{
+    /*const categoryList = this.$store.state.category.categoryList
+    if (categoryList.length === 0){
+      this.$store.dispatch('category/setCategorise').then((data)=>{
+        this.categoryList = data
+      })
+    }*/
+    // this.getData()
+    getCategory().then((data) => {
       this.categoryList = data
+      this.getData()
     })
+
     // console.log(this.category)
-    this.getData()
+
   },
   filters: {
     parseDate: function (val) {
@@ -121,14 +133,14 @@ export default {
       })
       // console.log("获取主页数据")
     },
-    getCategoryName(categoryId){
+    getCategoryName(categoryId) {
       if (this.categoryList.length === 0) {
-        getCategory().then((data)=>{
+        getCategory().then((data) => {
           this.categoryList = data
         })
       }
       for (let i = 0; i < this.categoryList.length; i++) {
-        if (categoryId === this.categoryList[i].id){
+        if (categoryId === this.categoryList[i].id) {
           return this.categoryList[i].name
         }
       }
@@ -152,6 +164,8 @@ export default {
   font-size: 20px;
   text-align: left;
 }
-html body{}
+
+html body {
+}
 </style>
 
