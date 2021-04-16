@@ -64,8 +64,10 @@
         </div>
       </div>
     </div>
+
     <Footer></Footer>
-    <music-player></music-player>
+    <music-player style="margin-bottom: 1px"></music-player>
+<!--    <Aplayer></Aplayer>-->
   </div>
 </template>
 <script>
@@ -78,11 +80,12 @@ import {formatTime} from "../utils"
 import Particles from "../components/Particles";
 import {getCategory} from "../utils/sessionUtils";
 import postMixin from "../components/mixin/postMixin";
+import MusicPlayer from "../components/MusicPlayer";
 import ClickChangeColor from "@/components/ClickChangeColor";
 import categoryMixin from "../components/mixin/categoryMixin";
 
 export default {
-  components: {Particles, Column, Footer, Header, Broadside},
+  components: {Particles, Column, Footer, Header, Broadside,MusicPlayer},
   mixins: [postMixin],
   head() {
     return {

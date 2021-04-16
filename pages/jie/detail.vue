@@ -139,12 +139,13 @@
               <el-card style="height: 150px">
                 <div class="layui-form layui-form-pane">
                   <div>
-                    <el-input
+                    <emoji-input :value="text" :placeholder="'请输入内容'"></emoji-input>
+<!--                    <el-input
                       type="textarea"
                       :rows="2"
                       placeholder="请输入内容"
                       v-model="text">
-                    </el-input>
+                    </el-input>-->
                   </div>
                   <div style="padding-top: 10px" v-show="showEmailReplyOptions">
                     <label>是否接收回复邮件:</label>
@@ -165,12 +166,16 @@
       <el-dialog :title="'回复'+ replyData.toUserNickName" :visible.sync="isShowReplyDialog"
                  @close="isShowReplyDialog = false" style="height: 550px">
         <div style="height: 90px">
-          <el-input
+          <emoji-input
+            :value="replyData.content"
+            :placeholder="'@'+replyData.toUserNickName + ':'"
+            ></emoji-input>
+<!--          <el-input
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 6}"
             :placeholder="'@'+replyData.toUserNickName + ':'"
             v-model="replyData.content">
-          </el-input>
+          </el-input>-->
           <div style="padding-top: 10px" v-show="showEmailReplyOptions">
             <label>是否接收回复邮件:</label>
             <el-radio-group v-model="replyData.receiveReply">

@@ -1,18 +1,18 @@
 <template>
-  <div style="z-index: -1;padding-right: 50px">
+  <div style="z-index: -1">
     <client-only>
-      <aplayer :autoplay="false" style="opacity: 0.7;float: right"
+      <aplayer :autoplay="false" style="opacity: 0.7;float: left"
                :style="{backgroundColor:getColor}"
                :mini="true"
+               :fixed="true"
                theme="pic"
                :showLrc="false"
                :music="music"
                :list="musics"
-               :float="true"
+               :float="false"
                :listFolded="true"
       />
     </client-only>
-
   </div>
 </template>
 

@@ -9,6 +9,7 @@ export default {
   mounted() {
     this.$store.dispatch('user/getInfo').then((data)=>{
       console.log("用户邮箱校验")
+      console.log(data.email)
       if (data.email == null) {
         confirmAlert.fire({
           title: '未绑定邮箱',

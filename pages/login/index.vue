@@ -2,7 +2,8 @@
   <div>
     <Particles style="padding-top: 10px"></Particles>
     <div id="wrapper" style="padding-left: 100px">
-      <el-image class="animate__animated animate__bounceInDown" style="width: 100px;height: 100px" src="/images/logo/logo-2.png"></el-image>
+      <el-image class="animate__animated animate__bounceInDown" style="width: 100px;height: 100px"
+                src="/images/logo/logo-2.png"></el-image>
       <nav class="switch_nav animate__animated animate__bounceInDown">
         <nuxt-link to="/login" id="switch_login" class="switch_btn on">登录</nuxt-link>
         <nuxt-link to="/register" id="switch_signup" class="switch_btn">注册</nuxt-link>
@@ -10,7 +11,7 @@
       </nav>
       <div style="float:right;padding-left: 50px">
         <el-form class="login-register-form" label-width="80px" :rules="rules" :model="loginData" ref="loginForm">
-          <el-form-item class="animate__animated animate__bounceInLeft" label="用户名" prop="username" >
+          <el-form-item class="animate__animated animate__bounceInLeft" label="用户名" prop="username">
             <el-input type="text" v-model="loginData.username" style="width: 300px">
               <i slot="prefix" class="el-input__icon fa fa-user"></i>
             </el-input>
@@ -24,7 +25,8 @@
             <Verify @getVerifyData="getVerifyData" ref="verify"></Verify>
           </el-form-item>
           <el-form-item class="animate__animated animate__fadeInUp">
-            <el-button v-loading.fullscreen.lock="fullscreenLoading" :disabled="isDisable" :loading="isLoading" style="width: 300px !important;height: 40px !important;"
+            <el-button v-loading.fullscreen.lock="fullscreenLoading" :disabled="isDisable" :loading="isLoading"
+                       style="width: 300px !important;height: 40px !important;"
                        @click="login" round>Login
             </el-button>
           </el-form-item>
@@ -45,7 +47,7 @@
       </div>
     </div>
     <div>
-      <DialogForm :dialogVisible = 'dialogVisible' :formType = 'formType' @cancelChange="cancelChange"></DialogForm>
+      <DialogForm :dialogVisible='dialogVisible' :formType='formType' @cancelChange="cancelChange"></DialogForm>
     </div>
   </div>
 </template>
@@ -60,7 +62,7 @@ import {mixinAlert, mixinToast} from "../../components/sweetalert/mixinSweetaler
 
 export default {
   components: {DialogForm, Particles, Verify},
-  mixins:[fullScreenLoadingMixin],
+  mixins: [fullScreenLoadingMixin],
   head() {
     return {
       title: '用户名密码登录',
@@ -91,7 +93,7 @@ export default {
   mounted() {
     mixinToast.fire({
       title: '提示',
-      titleText:'如果验证器未加载出来,请刷新页面'
+      titleText: '如果验证器未加载出来,请刷新页面'
     })
   },
   methods: {
@@ -103,8 +105,8 @@ export default {
         this.isLoading = false
         return;
       }
-      this.$refs.loginForm.validate((isValidate)=>{
-        if (isValidate){
+      this.$refs.loginForm.validate((isValidate) => {
+        if (isValidate) {
           // 有验证数据,进行登录的操作
           const encodeUsername = encrypt(this.loginData.username.trim())
           const encodePassword = encrypt(this.loginData.password.trim())
@@ -116,27 +118,27 @@ export default {
             verifyData: this.verifyData
           }
           this.$store.dispatch('user/login', requestData).then(() => {
-              this.$refs.loginForm.resetFields()
-              this.isLoading = false
-              this.stopLoading()
-              mixinAlert.fire({
-                title: '登录成功,即将自动跳转',
-                icon: 'success',
-                timer: 1500,
-              }).then(()=>{
-                console.log("登录成功")
-                // this.$refs['verify'].reset()
-                this.$router.push('/')
-              })
-            }).catch(() => {
-              this.$refs.loginForm.resetFields()
-              this.$refs.verify.reset()
-              this.isLoading = false
-              this.stopLoading()
-              this.isDisable = true
+            this.$refs.loginForm.resetFields()
+            this.isLoading = false
+            this.stopLoading()
+            mixinAlert.fire({
+              title: '登录成功,即将自动跳转',
+              icon: 'success',
+              timer: 1500,
+            }).then(() => {
+              console.log("登录成功")
+              // this.$refs['verify'].reset()
+              this.$router.push('/')
             })
+          }).catch(() => {
+            this.isLoading = false
+            this.stopLoading()
+            this.$refs.loginForm.resetFields()
+            this.$refs.verify.reset()
+            this.isDisable = true
+          })
         } else {
-         this.$message.error("请正确填写用户名和密码")
+          this.$message.error("请正确填写用户名和密码")
         }
       })
     },
@@ -151,7 +153,7 @@ export default {
       this.formType = val
       this.dialogVisible = true
     },
-    cancelChange(){
+    cancelChange() {
       this.dialogVisible = false
       this.formType = -1
     }
@@ -161,7 +163,7 @@ export default {
 
 <style>
 /*解决dialog出现页面抖动情况*/
-body{
-  padding-right: 0!important;
+body {
+  padding-right: 0 !important;
 }
 </style>

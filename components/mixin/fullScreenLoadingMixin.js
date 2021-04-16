@@ -1,6 +1,7 @@
 export default {
   data(){
     return{
+      // 全屏加载
       fullscreenLoading: false,
       loading: null
     }
